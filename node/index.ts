@@ -12,6 +12,7 @@ console.log("hello sup")
 app.set('view engine', 'ejs')
 app.engine('html', require('ejs').renderFile)
 
-app.get('/', (req, res) => res.render('index.html'))
+app.get('/', (req, res) => res.render('pages/index'))
+app.get('/d3', (req, res) => res.render('index.html'))
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
