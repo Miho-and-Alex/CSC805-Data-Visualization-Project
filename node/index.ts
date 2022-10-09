@@ -1,18 +1,17 @@
+import * as path from "path";
+import express from "express";
 
-import * as path from 'path'
-import express from 'express'
-
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
 app.use(express.static("public"));
 
-console.log("hello sup")
+console.log("hello sup");
 
-app.set('view engine', 'ejs')
-app.engine('html', require('ejs').renderFile)
+app.set("view engine", "ejs");
+app.engine("html", require("ejs").renderFile);
 
-app.get('/', (req, res) => res.render('pages/index'))
-app.get('/d3', (req, res) => res.render('index.html'))
+app.get("/", (req, res) => res.render("pages/index"));
+app.get("/d3", (req, res) => res.render("index.html"));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
