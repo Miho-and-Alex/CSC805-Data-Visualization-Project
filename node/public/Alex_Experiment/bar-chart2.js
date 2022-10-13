@@ -1,92 +1,90 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
-async function getCsvData(path) {
-  let arrData = []
-  await d3.csv(path, function (data) {
-    //arrData.push(data)
-    arrData = data
-  })
-  return arrData
-}
-
-function lineChart() {
+async function barChart() {
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 30, bottom: 30, left: 60 },
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom
 
-  // append the svg object to the body of the page
-  var svg = d3
-    .select('#my_dataviz')
+  const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 130 }
+  const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
+  const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
+
+  const svg = d3
+    .select('#chart-area')
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+
+  const g = svg
     .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
 
-  let data = getCsvData('./songs_normalize.csv')
-  //Read the data
-  // d3.csv('songs_normalize.csv', function (data) {
-  // Add X axis --> it is a date format
-  var x = d3.scaleLinear().domain([2000, 2022]).range([0, width])
-  svg
-    .append('g')
-    .attr('transform', 'translate(0,' + height + ')')
-    .call(d3.axisBottom(x))
+  // X label
+  g.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 50)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .text('Month')
 
-  // Add Y axis
-  var y = d3.scaleLinear().domain([-100, 100]).range([height, 0])
-  svg.append('g').call(d3.axisLeft(y))
+  // Y label
+  g.append('text')
+    .attr('class', 'y axis-label')
+    .attr('x', -(HEIGHT / 2))
+    .attr('y', -60)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .attr('transform', 'rotate(-90)')
+    .text('Revenue ($)')
 
-  // Show confidence interval
-  svg
-    .append('path')
-    .datum(data)
-    .attr('fill', '#cce5df')
-    .attr('stroke', 'none')
-    .attr(
-      'd',
-      d3
-        .area()
-        .x(function (d) {
-          return x(d.year)
-        })
-        .y0(function (d) {
-          return y(d.CI_right)
-        })
-        .y1(function (d) {
-          return y(d.CI_left)
-        })
-    )
+  let data = await d3.csv('songs_normalize.csv', data => ({...data, popularity: +data.popularity}))
 
-  // Add the line
-  svg
-    .append('path')
-    .datum(data)
-    .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
-    .attr('stroke-width', 1.5)
-    .attr(
-      'd',
-      d3
-        .line()
-        .x(function (d) {
-          return x(d.year)
-        })
-        .y(function (d) {
-          return y(d.popularity)
-        })
-    )
+  const x = d3
+    .scaleBand()
+    .domain(data.map((d) => d.artist))
+    .range([0, WIDTH])
+    .paddingInner(0.3)
+    .paddingOuter(0.2)
+
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => d.popularity ? d.popularity : 0)])
+    .range([HEIGHT, 0])
+
+  const xAxisCall = d3.axisBottom(x)
+  g.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', `translate(0, ${HEIGHT})`)
+    .call(xAxisCall)
+    .selectAll('text')
+    .attr('y', '10')
+    .attr('x', '-5')
+    .attr('text-anchor', 'end')
+    .attr('transform', 'rotate(-40)')
+
+  const yAxisCall = d3
+    .axisLeft(y)
+    .ticks(3)
+    .tickFormat((d) => d + 'm')
+  g.append('g').attr('class', 'y axis').call(yAxisCall)
+
+  const rects = g.selectAll('rect').data(data)
+
+  rects
+    .enter()
+    .append('rect')
+    .attr('y', (d) => y(d.revenue))
+    .attr('x', (d) => x(d.month))
+    .attr('width', x.bandwidth)
+    .attr('height', (d) => HEIGHT - y(d.popularity))
+    .attr('fill', 'grey')
 }
 
-let run = async () => {
-  let data = await getCsvData('./songs_normalize.csv')
-  console.log(data)
-
-  lineChart()
-
-  //d3.select("body").append()
+let main = async () => {
+  barChart()
 }
 
-run()
+main()
