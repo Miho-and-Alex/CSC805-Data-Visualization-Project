@@ -1,28 +1,90 @@
-import * as d3 from "https://cdn.skypack.dev/d3@7";
-import { selectAll } from "https://cdn.skypack.dev/d3-selection@3";
+import * as d3 from 'https://cdn.skypack.dev/d3@7'
+import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
-d3.csv("songs_normalize.csv", function (data) {
-  for (var i = 0; i < data.length; i++) {
-    console.log(data[i].Song);
-    console.log(data[i].Artist);
-  }
-});
+async function barChart() {
+  // set the dimensions and margins of the graph
+  var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom
 
-var width = 500;
-var height = 500;
+  const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 130 }
+  const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
+  const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
-//Create SVG element
-var svg = d3
-  .select("body")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
+  const svg = d3
+    .select('#chart-area')
+    .append('svg')
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
 
-//Create line element inside SVG
-svg
-  .append("line")
-  .attr("x1", 100)
-  .attr("x2", 500)
-  .attr("y1", 50)
-  .attr("y2", 50)
-  .attr("stroke", "black");
+  const g = svg
+    .append('g')
+    .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
+
+  // X label
+  g.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 60)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .text('Year')
+
+  // Y label
+  g.append('text')
+    .attr('class', 'y axis-label')
+    .attr('x', -(HEIGHT / 2))
+    .attr('y', -60)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .attr('transform', 'rotate(-90)')
+    .text('Popularity')
+
+  let data = await d3.csv('../data/grouped-by-year.csv', data => ({...data, popularity: +data.popularity}))
+
+  const x = d3
+    .scaleBand()
+    .domain(data.map((d) => d.year))
+    .range([0, WIDTH])
+    .paddingInner(0.3)
+    .paddingOuter(0.2)
+
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => d.popularity ? d.popularity : 0)])
+    .range([HEIGHT, 0])
+
+  const xAxisCall = d3.axisBottom(x)
+  g.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', `translate(0, ${HEIGHT})`)
+    .call(xAxisCall)
+    .selectAll('text')
+    .attr('y', '10')
+    .attr('x', '-5')
+    .attr('text-anchor', 'end')
+    .attr('transform', 'rotate(-40)')
+
+  const yAxisCall = d3
+    .axisLeft(y)
+    .ticks(5)
+    .tickFormat(d => d)
+  g.append('g').attr('class', 'y axis').call(yAxisCall)
+
+  const rects = g.selectAll('rect').data(data)
+
+  rects
+    .enter()
+    .append('rect')
+    .attr('y', (d) => y(d.popularity))
+    .attr('x', (d) => x(d.year))
+    .attr('width', x.bandwidth)
+    .attr('height', (d) => HEIGHT - y(d.popularity))
+    .attr('fill', 'pink')
+}
+
+let main = async () => {
+  barChart()
+}
+
+main()
