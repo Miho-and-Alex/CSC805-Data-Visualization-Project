@@ -1,19 +1,13 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
-async function barChart(data, column) {
-
+function barChart(data, column) {
   // First clear the div
-  d3.select("#chart-area").html("");
+  d3.select('#chart-area').html('')
 
   d3.select('#dropdown-label').text(column)
 
-  // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 30, bottom: 30, left: 60 },
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom
-
-  const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 130 }
+  const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
@@ -38,7 +32,7 @@ async function barChart(data, column) {
 
   // Y label
   g.append('text')
-    .attr('class', 'y axis-label')
+    .attr('class', 'y axis-label y-axis-label')
     .attr('x', -(HEIGHT / 2))
     .attr('y', -60)
     .attr('font-size', '20px')
@@ -58,13 +52,9 @@ async function barChart(data, column) {
     .domain([0, d3.max(data, d => (d[column] ? d[column] : 0))])
     .range([HEIGHT, 0])
 
-  
-  console.log(d3.max(data, data => data.explicit));
-  console.log(d3.min(data, data => data.explicit));
-
   const xAxisCall = d3.axisBottom(x)
   g.append('g')
-    .attr('class', 'x axis')
+    .attr('class', 'x axis x-axis')
     .attr('transform', `translate(0, ${HEIGHT})`)
     .call(xAxisCall)
     .selectAll('text')
@@ -77,7 +67,7 @@ async function barChart(data, column) {
     .axisLeft(y)
     .ticks(5)
     .tickFormat(d => d)
-  g.append('g').attr('class', 'y axis').call(yAxisCall)
+  g.append('g').attr('class', 'y axis y-axis').call(yAxisCall)
 
   const rects = g.selectAll('rect').data(data)
 
@@ -88,20 +78,63 @@ async function barChart(data, column) {
     .attr('x', d => x(d.year))
     .attr('width', x.bandwidth)
     .attr('height', d => HEIGHT - y(d[column]))
-    .attr('fill', 'pink')
+    .attr('fill', 'red')
+
+  return { g, HEIGHT }
 }
 
-async function addDropdownMenu(data) {
+async function addDropdownMenu(data, svg, HEIGHT) {
   let dropdown = document.getElementById('bar-chart-y-axis-dropdown')
 
   for (let column of data.columns) {
     let button = document.createElement('button')
-    button.addEventListener('click', () => barChart(data, column))
+    button.addEventListener('click', () => updateBar(data, svg, HEIGHT, column))
     button.classList.add('dropdown-item')
     button.innerHTML = column
     let entry = document.createElement('li').appendChild(button)
     dropdown.appendChild(entry)
   }
+}
+
+function updateBar(data, svg, h, column) {
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, d => (d[column] ? d[column] : 0))])
+    .range([h, 0])
+
+  svg.selectAll('.y-axis-label').text(column)
+
+  svg.selectAll('.y-axis').remove()
+  const yAxisCall = d3
+    .axisLeft(y)
+    .ticks(5)
+    .tickFormat(d => d)
+  svg.append('g').attr('class', 'y axis y-axis').call(yAxisCall)
+
+  const colorScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, d => (d[column] ? d[column] : 0))])
+    .range([0, 256])
+
+  console.log(svg)
+  //Update all rects
+  svg
+    .selectAll('rect')
+    .data(data)
+    .transition() // <---- Here is the transition
+    .duration(2000) // 2 seconds
+    .attr('y', d => y(d[column]))
+    .attr('height', d => h - y(d[column]))
+    .attr('fill', function (d) {
+      let rgbStr =
+        'rgb(' +
+        Math.round(colorScale(d[column])) +
+        ',0,' +
+        Math.round(colorScale(d[column]) / 10) +
+        ')'
+      //console.log(rgbStr)
+      return rgbStr
+    })
 }
 
 let main = async () => {
@@ -123,10 +156,8 @@ let main = async () => {
     temp: +data.tempo,
   }))
 
-  console.log(averagedData);
-
-  barChart(averagedData, 'popularity')
-  addDropdownMenu(averagedData)
+  let { g: barChartSVG, HEIGHT } = barChart(averagedData, 'popularity')
+  addDropdownMenu(averagedData, barChartSVG, HEIGHT)
 }
 
 main()
