@@ -148,12 +148,13 @@ let main = async () => {
     energy: +data.energy,
     key: +data.key,
     loudness: +data.loudness,
+    mode: +data.mode,
     speechiness: +data.speechiness,
     acousticness: +data.acousticness,
     instrumentalness: +data.instrumentalness,
     liveness: +data.liveness,
     valence: +data.valence,
-    temp: +data.tempo,
+    tempo: +data.tempo,
   }))
 
   let { g: barChartSVG, HEIGHT } = barChart(averagedData, 'popularity')
