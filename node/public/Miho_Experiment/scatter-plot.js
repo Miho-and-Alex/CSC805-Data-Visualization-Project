@@ -79,7 +79,6 @@ async function main() {
     }
     
     var mousemove = function(event, d) {
-        console.log(event.x + ", " + event.y);
         tooltip
             .html(d.song + "<br/>by " + d.artist)
             .style("left", (event.x) + 10 + "px")
