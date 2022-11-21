@@ -11,12 +11,17 @@ var svg = d3.select("#bubble-chart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .call(d3.zoom()
+        .scaleExtent([1, 3])
+        .on("zoom", function (event) {
+            svg.attr("transform", event.transform)
+        }
+    ))
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 async function main() {
     let data = await d3.csv("Spotify Dataset.csv");
-    console.log(data);
     // let allColumns = ['year', 'genre', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'explicit'];
     let genres = [...new Set(data.map(d => d.genre))]
 
@@ -33,6 +38,25 @@ async function main() {
             }
         })
 
+    let elements = svg.selectAll('.bubble')
+        .data(nodes)
+        .enter()
+        .append('g')
+  
+    let bubbles = elements
+        .append('circle')
+        .classed('bubble', true)
+        .attr('r', d => d.radius)
+        .style("fill", "#69b3a2")
+        .style("opacity", 0.4);
+  
+    let labels = elements
+        .append('text')
+        .attr('dy', '-0.3em')
+        .style('text-anchor', 'middle')
+        .style('font-size', 12)
+        .text(d => d.genre)
+
     var simulation = d3.forceSimulation(nodes)
         .force('charge', d3.forceManyBody().strength(5))
         .force('center', d3.forceCenter(width / 2, height / 2))
@@ -41,34 +65,15 @@ async function main() {
         }))
         .on('tick', ticked);
 
-    function ticked() {
-        var u = d3.select('g')
-            .selectAll('circle')
-            .data(nodes)
-            .join('circle')
-            .attr('r', function(d) {
-                return d.radius
-            })
-            .attr('cx', function(d) {
-                return d.x
-            })
-            .attr('cy', function(d) {
-                return d.y
-            })
-            .style("fill", "#69b3a2")
-            .style("opacity", 0.4);
 
-        
-        let label = svg.selectAll("text")
-        .data(nodes).enter()
-        .append("text")
-        .attr("x", function(d) {return d.x - (Math.sqrt(d.radius)/Math.PI)})
-        .attr("y", function(d) {return d.y- (Math.sqrt(d.radius)/Math.PI)})
-        // .attr("text-anchor", "middle")
-        .style("font-size", "10px")
-        .text(function(d) {
-            return d.genre
-        });
+    function ticked() {
+        bubbles
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y)
+
+        labels
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
     }
 }
         
