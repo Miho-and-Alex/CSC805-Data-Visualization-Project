@@ -97,6 +97,8 @@ async function addDropdownMenu(data, svg, HEIGHT) {
 }
 
 function updateBar(data, svg, h, column) {
+  d3.select('#dropdown-label').text(column)
+
   const y = d3
     .scaleLinear()
     .domain([0, d3.max(data, d => (d[column] ? d[column] : 0))])
