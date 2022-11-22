@@ -3,8 +3,7 @@ import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
 function barChart(data, column) {
   // First clear the div
-  d3.select('#chart-area').html('')
-
+  d3.select('#line-chart-area').html('') // not needed anymore
   d3.select('#dropdown-label').text(column)
 
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
@@ -12,7 +11,7 @@ function barChart(data, column) {
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
   const svg = d3
-    .select('#chart-area')
+    .select('#line-chart-area')
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
