@@ -21,7 +21,6 @@ async function main() {
     let data = await d3.json("Spotify Dataset.json");
     let group = d3.group(data, d => d.genre);
     let root = pack(group);
-    console.log(root)
     let focus = root;
     let view;
     
@@ -44,16 +43,17 @@ async function main() {
         .on("mouseout", function() { d3.select(this).attr("stroke", null); })
         .on("click", (event, d) => focus !== d && (zoom(event, d), event.stopPropagation()));
     
-    const label = node.append("text")
+    const label = svg.append("g")
         .style("font", "10px sans-serif")
         .attr("pointer-events", "none")
         .attr("text-anchor", "middle")
         .selectAll("text")
-        .data(root.children)
+        .data(root.descendants())
         .join("text")
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
-        .text(d => d.data);
+        // .text(d => d.parent ? d.parent.data[0] : null);
+        .text(d => d.parent === root ? d.data[0] : null);
     
     zoomTo([root.x, root.y, root.r * 2]);
     
