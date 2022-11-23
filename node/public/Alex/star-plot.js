@@ -109,17 +109,15 @@ function starPlot(data) {
         coordinates.push({ x: cx, y: cy })
         continue
       }
-      //console.log(data.columns[i]);
-      //console.log('columns:', data_point[data.columns[i]]);
       let angle = Math.PI / 2 + (2 * Math.PI * i) / data.columns.length
       let coord = angleToCoordinate2(angle, sample[column], column)
-      console.log(column, sample[column], coord)
+      //console.log(column, sample[column], coord)
       coordinates.push(coord)
     }
     return coordinates
   }
 
-  for (var i = 0; i < 1; i++) {
+  for (var i = 0; i < 3; i++) {
     let d = data[i]
     let color = colors[i]
     let coordinates = getPathCoordinates(d)
@@ -137,7 +135,7 @@ function starPlot(data) {
 }
 
 let main = async () => {
-  let data = await d3.csv('../data/songs_normalize.csv', data => ({
+  let data = await d3.csv('../data/removed-strings.csv', data => ({
     ...data,
     year: +data.year,
     duration_ms: +data.duration_ms,
