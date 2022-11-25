@@ -15,7 +15,7 @@ let svg = d3.select("#scatter-plot")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 async function main() {
-    let data = await d3.csv("Spotify Dataset.csv");
+    let data = await d3.csv("./../data/Spotify Dataset.csv");
     let allColumns = ['year', 'genre', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'explicit'];
     let selectedColumn = allColumns[0];
 
