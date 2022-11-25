@@ -2,6 +2,7 @@ import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
 function starPlot(data) {
+  console.log(data.columns);
   const MARGIN = { LEFT: 50, RIGHT: 50, TOP: 50, BOTTOM: 50 }
   const WIDTH = 700 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM
@@ -17,20 +18,7 @@ function starPlot(data) {
     .append('g')
     .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
 
-  // Can append the radar chart below
-
-  let res = []
-
-  //generate the data
-  for (var i = 0; i < 3; i++) {
-    var point = {}
-    //each feature will be a random number from 1-9
-    data.columns.forEach(f => (point[f] = 1 + Math.random() * 8))
-    res.push(point)
-  }
-
   let radialScale = d3.scaleLinear().domain([0, 10]).range([0, 150])
-
   let ticks = [2, 4, 6, 8, 10]
 
   // adding rings

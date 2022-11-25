@@ -1,4 +1,5 @@
 import * as d3 from "https://cdn.skypack.dev/d3@7"
+import { starPlot } from './star-plot.js'
 import { selectAll } from "https://cdn.skypack.dev/d3-selection@3"
 
 let margin = {top: 0, right: 80, bottom: 200, left: 80},
@@ -47,14 +48,18 @@ async function main() {
         .on("click", (event) => zoom(event, root));
 
     let mouseclick = function(event, d) {
+        console.log(d.index);
+        console.log(d);
         tooltip
-            .html("<div>" + d.song + " by " + d.artist + "</div>")
+            .html("<div id=starplot-" + d.index + ">" + d.song + " by " + d.artist + "</div>")
             .style("left", (event.x) + 10 + "px")
             .style("top", (event.y) + 5 + "px")
             .style("width", width * 0.5 + "px")
             .style("height", height * 0.5 + "px")
             .style("opacity", 1)
         tooltipOn = true
+
+        starPlot(d, event.x, event.y)
     }
 
     let mousemove = function(event, d) {

@@ -1,14 +1,13 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
-function starPlot(data) {
-  const MARGIN = { LEFT: 50, RIGHT: 50, TOP: 50, BOTTOM: 50 }
+export function starPlot(data, cx, cy) {
+  const MARGIN = { LEFT: 0, RIGHT: 0, TOP: 0, BOTTOM: 0 }
   const WIDTH = 700 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM
-  const [cx, cy] = [300, 200]
 
   const svg = d3
-    .select('#radar-chart-area')
+    .select('#starplot-' + data.index)
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
@@ -19,18 +18,7 @@ function starPlot(data) {
 
   // Can append the radar chart below
 
-  let res = []
-
-  //generate the data
-  for (var i = 0; i < 3; i++) {
-    var point = {}
-    //each feature will be a random number from 1-9
-    data.columns.forEach(f => (point[f] = 1 + Math.random() * 8))
-    res.push(point)
-  }
-
   let radialScale = d3.scaleLinear().domain([0, 10]).range([0, 150])
-
   let ticks = [2, 4, 6, 8, 10]
 
   // adding rings
@@ -75,7 +63,6 @@ function starPlot(data) {
 
   for (let i = 0; i < data.columns.length; i++) {
     let column = data.columns[i]
-
     let angle = Math.PI / 2 + (2 * Math.PI * i) / data.columns.length
     let line_coordinate = angleToCoordinate(angle, 10)
     let label_coordinate = angleToCoordinate(angle, 12.5)
