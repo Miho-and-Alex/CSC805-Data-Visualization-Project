@@ -2,12 +2,12 @@ import * as d3 from "https://cdn.skypack.dev/d3@7"
 import { selectAll } from "https://cdn.skypack.dev/d3-selection@3"
 
 // set the dimensions and margins of the graph
-var margin = {top: 40, right: 150, bottom: 40, left: 80},
+let margin = {top: 40, right: 150, bottom: 40, left: 80},
     width = 800 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
-var svg = d3.select("#scatter-plot")
+let svg = d3.select("#scatter-plot")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -27,13 +27,13 @@ async function main() {
         .text(function (d) { return d; })
         .attr("value", function (d) { return d; });
 
-    var selectedData = data.map(function(d){return {popularity: d.popularity, value:d.year, song: d.song, artist: d.artist} })
+    let selectedData = data.map(function(d){return {popularity: d.popularity, value:d.year, song: d.song, artist: d.artist} })
 
     // Add X axis
-    var x = d3.scaleLinear()
+    let x = d3.scaleLinear()
         .domain([d3.min(selectedData, function(d) { return +d.value; }), d3.max(selectedData, function(d) { return +d.value; })])
         .range([0, width]);
-    var xAxis = svg.append("g")
+    let xAxis = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
         .call(g => g.append("text")
@@ -45,10 +45,10 @@ async function main() {
         .text(selectedColumn + " →"))
 
     // Add Y axis
-    var y = d3.scaleLinear()
+    let y = d3.scaleLinear()
         .domain([d3.min(selectedData, function(d) { return +d.popularity; }), d3.max(selectedData, function(d) { return +d.popularity; })])
         .range([height, 0]);
-    var yAxis = svg.append("g")
+    let yAxis = svg.append("g")
         .call(d3.axisLeft(y))
         .call(g => g.append("text")
         .attr("x", -margin.left + 10)
@@ -57,7 +57,7 @@ async function main() {
         .attr("text-anchor", "start")
         .text("↑ Popularity"))
 
-    var tooltip = d3.select("#scatter-plot")
+    let tooltip = d3.select("#scatter-plot")
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -68,24 +68,24 @@ async function main() {
         .style("border-radius", "5px")
         .style("padding", "5px");
 
-    var mouseover = function(event, d) {
+    let mouseover = function(event, d) {
         tooltip
             .style("opacity", 1)
 
         d3.select(this)
             .attr("r", 6.0)
             .style("opacity", 1)
-            // .style("stroke", "black") // stroke doesn't work with D3 animation?
+            .style("stroke", "black")
     }
     
-    var mousemove = function(event, d) {
+    let mousemove = function(event, d) {
         tooltip
             .html(d.song + "<br/>by " + d.artist)
             .style("left", (event.x) + 10 + "px")
             .style("top", (event.y) + 5 + "px")
     }
 
-    var mouseleave = function(event, d) {
+    let mouseleave = function(event, d) {
         tooltip
             .transition()
             .duration(500)
@@ -94,11 +94,11 @@ async function main() {
         d3.select(this)
             .attr("r", 5.5)
             .style("opacity", 0.4)
-            // .style("stroke", "white") // stroke doesn't work with D3 animation?
+            .style("stroke", "white")
     }
         
     // Add dots
-    var dot = svg.append('g')
+    let dot = svg.append('g')
         .selectAll("dot")
         .data(selectedData)
         .enter()
@@ -115,8 +115,7 @@ async function main() {
 
     // A function that update the chart
     function update(selectedColumn) {
-        selectedData = data.map(function(d){return {popularity: d.popularity, value:d[selectedColumn]} })
-        
+        selectedData = data.map(function(d){return {popularity: d.popularity, value:d[selectedColumn], song: d.song, artist: d.artist} })
         if(selectedColumn == 'genre' || selectedColumn == 'explicit') {
             x = d3.scalePoint()
                 .domain([...new Set(selectedData.map(d => d.value))])
@@ -146,12 +145,12 @@ async function main() {
                 .style("text-anchor", "end")
                 .attr("transform", "rotate(0)");
         }
-        
+
         dot.data(selectedData)
-        .transition()
-        .duration(1000)
-        .attr("cx", function(d) { return x(d.value) })
-        .attr("cy", function(d) { return y(d.popularity) });
+            .transition()
+            .duration(1000)
+            .attr("cx", function(d) { console.log(d); return x(d.value) })
+            .attr("cy", function(d) { return y(d.popularity) });
     }
 
     // Update the chart when x-asix is changed
