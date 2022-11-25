@@ -20,12 +20,17 @@ async function main() {
     let selectedColumn = allColumns[0];
 
     d3.select("#scatter-plot-x-axis")
-        .selectAll('myOptions')
+        .selectAll('allColumns')
         .data(allColumns)
         .enter()
-        .append('option')
+        .append("li")
+        .attr("class", "dropdown-item")
         .text(function (d) { return d; })
-        .attr("value", function (d) { return d; });
+        .attr("value", function (d) { return d; })
+        .on("click", function(event, d) {
+            selectedColumn = d;
+            update(selectedColumn);
+        })
 
     let selectedData = data.map(function(d){return {popularity: d.popularity, value:d.year, song: d.song, artist: d.artist} })
 
@@ -149,15 +154,18 @@ async function main() {
         dot.data(selectedData)
             .transition()
             .duration(1000)
-            .attr("cx", function(d) { console.log(d); return x(d.value) })
+            .attr("cx", function(d) { return x(d.value) })
             .attr("cy", function(d) { return y(d.popularity) });
+
+        d3.select("#scatter-plot-current-x-axis")
+            .text(selectedColumn)
     }
 
     // Update the chart when x-asix is changed
-    d3.select("#scatter-plot-x-axis").on("change", function(d) {
-        selectedColumn = d3.select(this).property("value");
-        update(selectedColumn);
-    })
+    // d3.select("#scatter-plot-x-axis-dropdown").on("change", function(d) {
+    //     selectedColumn = d3.select(this).property("value");
+    //     update(selectedColumn);
+    // })
 
 }
 
