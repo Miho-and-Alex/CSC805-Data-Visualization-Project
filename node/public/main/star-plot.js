@@ -1,10 +1,15 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
+const columns = ['duration_ms', 'year', 'popularity', 'danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
+let whole_dataset;
+
 export function starPlot(data, cx, cy) {
+  cx = 240, cy = 170 
   const MARGIN = { LEFT: 0, RIGHT: 0, TOP: 0, BOTTOM: 0 }
-  const WIDTH = 700 - MARGIN.LEFT - MARGIN.RIGHT
-  const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM
+  const WIDTH = 450 - MARGIN.LEFT - MARGIN.RIGHT
+  const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
+  const radius = 130
 
   const svg = d3
     .select('#starplot-' + data.index)
@@ -18,7 +23,7 @@ export function starPlot(data, cx, cy) {
 
   // Can append the radar chart below
 
-  let radialScale = d3.scaleLinear().domain([0, 10]).range([0, 150])
+  let radialScale = d3.scaleLinear().domain([0, columns.length]).range([0, radius])
   let ticks = [2, 4, 6, 8, 10]
 
   // adding rings
@@ -46,8 +51,8 @@ export function starPlot(data, cx, cy) {
 
     let radialScale = d3
       .scaleLinear()
-      .domain([d3.min(data, d => d[column]), d3.max(data, d => d[column])])
-      .range([0, 150])
+      .domain([d3.min(whole_dataset, d => d[column]), d3.max(whole_dataset, d => d[column])])
+      .range([0, radius])
     let x = Math.cos(angle) * radialScale(value)
     let y = Math.sin(angle) * radialScale(value)
     return { x: cx + x, y: cy - y }
@@ -55,15 +60,15 @@ export function starPlot(data, cx, cy) {
 
   function angleToCoordinate(angle, value) {
     // need new scale for each column
-
     let x = Math.cos(angle) * radialScale(value)
     let y = Math.sin(angle) * radialScale(value)
     return { x: cx + x, y: cy - y }
   }
 
-  for (let i = 0; i < data.columns.length; i++) {
-    let column = data.columns[i]
-    let angle = Math.PI / 2 + (2 * Math.PI * i) / data.columns.length
+  // adding column labels
+  for (let i = 0; i < columns.length; i++) {
+    let column = columns[i]
+    let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
     let line_coordinate = angleToCoordinate(angle, 10)
     let label_coordinate = angleToCoordinate(angle, 12.5)
 
@@ -90,13 +95,13 @@ export function starPlot(data, cx, cy) {
 
   function getPathCoordinates(sample) {
     let coordinates = []
-    for (var i = 0; i < data.columns.length; i++) {
-      let column = data.columns[i]
+    for (var i = 0; i < columns.length; i++) {
+      let column = columns[i]
       if (typeof sample[column] == 'string') {
         coordinates.push({ x: cx, y: cy })
         continue
       }
-      let angle = Math.PI / 2 + (2 * Math.PI * i) / data.columns.length
+      let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
       let coord = angleToCoordinate2(angle, sample[column], column)
       //console.log(column, sample[column], coord)
       coordinates.push(coord)
@@ -104,8 +109,8 @@ export function starPlot(data, cx, cy) {
     return coordinates
   }
 
-  for (var i = 0; i < 3; i++) {
-    let d = data[i]
+  for (var i = 0; i < 1; i++) {
+    let d = data
     let color = colors[i]
     let coordinates = getPathCoordinates(d)
 
@@ -122,7 +127,7 @@ export function starPlot(data, cx, cy) {
 }
 
 let main = async () => {
-  let data = await d3.csv('../data/removed-strings.csv', data => ({
+  whole_dataset = await d3.csv('../data/removed-strings.csv', data => ({
     ...data,
     year: +data.year,
     duration_ms: +data.duration_ms,
@@ -141,7 +146,7 @@ let main = async () => {
     tempo: +data.tempo,
   }))
 
-  starPlot(data, 'popularity')
+  //starPlot(data, 'popularity')
 }
 
 main()

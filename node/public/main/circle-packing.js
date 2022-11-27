@@ -48,8 +48,9 @@ async function main() {
         .on("click", (event) => zoom(event, root));
 
     let mouseclick = function(event, d) {
-        console.log(d.index);
-        console.log(d);
+        console.log(event)
+        console.log(event.x);
+        console.log(event.y);
         tooltip
             .html("<div id=starplot-" + d.index + ">" + d.song + " by " + d.artist + "</div>")
             .style("left", (event.x) + 10 + "px")
