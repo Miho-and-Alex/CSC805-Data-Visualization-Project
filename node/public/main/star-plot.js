@@ -1,5 +1,4 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
-import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
 let whole_dataset = await d3.csv('../data/removed-strings.csv', data => ({
   ...data,
@@ -103,7 +102,6 @@ export function starPlot(data, xOffset, yOffset) {
     .x(d => d.x)
     .y(d => d.y)
   let colors = ['darkorange', 'gray', 'navy']
-  console.log(data);
   //let coordinates = getPathCoordinates(data[0], columns, radius, cx, cy)
 
   //draw the path element
@@ -117,8 +115,6 @@ export function starPlot(data, xOffset, yOffset) {
     .attr('stroke-opacity', 1)
     .attr('opacity', 0.5)
 
-    console.log(svg);
-  
     return svg.node()
 }
 
