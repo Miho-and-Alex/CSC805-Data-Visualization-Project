@@ -1,0 +1,11 @@
+body {
+    margin: 20px
+}
+
+svg {
+    outline: 1px solid red;
+    outline-offset: 2px;
+}
+
+#chart-area {
+}
