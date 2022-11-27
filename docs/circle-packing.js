@@ -29,7 +29,7 @@ let tooltip = d3.select("#circle-packing")
     .style("padding", "5px")
 
 async function main() {
-    let data = await d3.json("./../data/Spotify Dataset.json");
+    let data = await d3.json("./data/Spotify Dataset.json");
     let group = d3.group(data, d => d.genre);
     let root = pack(group);
     let focus = root;
