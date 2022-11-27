@@ -49,15 +49,17 @@ async function main() {
 
     let mouseclick = function(event, d) {
        tooltip
-            .html("<div id=starplot-" + d.index + ">" + d.song + " by " + d.artist + "</div>")
+            .text(d.song + " by " + d.artist)
             .style("left", (event.x) + 10 + "px")
             .style("top", (event.y) + 5 + "px")
             .style("width", width * 0.5 + "px")
             .style("height", height * 0.5 + "px")
             .style("opacity", 1)
+
+        tooltip.append(() => starPlot([d], event.x, event.y))
         tooltipOn = true
 
-        starPlot(d, event.x, event.y)
+        //starPlot([d], event.x, event.y)
     }
 
     let mousemove = function(event, d) {

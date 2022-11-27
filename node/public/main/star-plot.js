@@ -1,24 +1,24 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7'
 import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
-let  whole_dataset = await d3.csv('../data/removed-strings.csv', data => ({
-    ...data,
-    year: +data.year,
-    duration_ms: +data.duration_ms,
-    explicit: data.explicit ? 1 : 0,
-    popularity: +data.popularity,
-    danceability: +data.danceability,
-    energy: +data.energy,
-    key: +data.key,
-    loudness: +data.loudness,
-    mode: +data.mode,
-    speechiness: +data.speechiness,
-    acousticness: +data.acousticness,
-    instrumentalness: +data.instrumentalness,
-    liveness: +data.liveness,
-    valence: +data.valence,
-    tempo: +data.tempo,
-  }))
+let whole_dataset = await d3.csv('../data/removed-strings.csv', data => ({
+  ...data,
+  year: +data.year,
+  duration_ms: +data.duration_ms,
+  explicit: data.explicit ? 1 : 0,
+  popularity: +data.popularity,
+  danceability: +data.danceability,
+  energy: +data.energy,
+  key: +data.key,
+  loudness: +data.loudness,
+  mode: +data.mode,
+  speechiness: +data.speechiness,
+  acousticness: +data.acousticness,
+  instrumentalness: +data.instrumentalness,
+  liveness: +data.liveness,
+  valence: +data.valence,
+  tempo: +data.tempo,
+}))
 
 export function starPlot(data, xOffset, yOffset) {
   let cx = 240
@@ -45,8 +45,7 @@ export function starPlot(data, xOffset, yOffset) {
   ]
 
   const svg = d3
-    .select('#starplot-' + data.index)
-    .append('svg')
+    .create('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
 
@@ -104,22 +103,23 @@ export function starPlot(data, xOffset, yOffset) {
     .x(d => d.x)
     .y(d => d.y)
   let colors = ['darkorange', 'gray', 'navy']
+  console.log(data);
+  //let coordinates = getPathCoordinates(data[0], columns, radius, cx, cy)
 
-  for (var i = 0; i < 1; i++) {
-    let d = data
-    let color = colors[i]
-    let coordinates = getPathCoordinates(d, columns, radius, cx, cy)
+  //draw the path element
+  g.selectAll('path')
+    .data(data)
+    .join('path')
+    .attr('d', d => linePath(getPathCoordinates(d, columns, radius, cx, cy)))
+    .attr('stroke-width', 1)
+    .attr('stroke', 'red')
+    .attr('fill', (d, i) => colors[2])
+    .attr('stroke-opacity', 1)
+    .attr('opacity', 0.5)
 
-    //draw the path element
-    g.append('path')
-      .datum(coordinates)
-      .attr('d', linePath)
-      .attr('stroke-width', 1)
-      .attr('stroke', 'red')
-      .attr('fill', color)
-      .attr('stroke-opacity', 1)
-      .attr('opacity', 0.5)
-  }
+    console.log(svg);
+  
+    return svg.node()
 }
 
 function getPathCoordinates(sample, columns, radius, cx, cy) {
