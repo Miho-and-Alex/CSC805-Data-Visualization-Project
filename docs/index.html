@@ -7,16 +7,44 @@
     <title>Document</title>
   </head>
   <body>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" type="button" role="tab" aria-controls="nav-about" aria-selected="true">About</button>
+        <button class="nav-link" id="nav-barchart-tab" data-bs-toggle="tab" data-bs-target="#nav-barchart" type="button" role="tab" aria-controls="nav-barchart" aria-selected="false">Bar Chart</button>
+        <button class="nav-link" id="nav-scatterplot-tab" data-bs-toggle="tab" data-bs-target="#nav-scatterplot" type="button" role="tab" aria-controls="nav-scatterplot" aria-selected="false">Scatter Plot</button>
+        <button class="nav-link" id="nav-circlepacking-tab" data-bs-toggle="tab" data-bs-target="#nav-circlepacking" type="button" role="tab" aria-controls="nav-circlepacking" aria-selected="false">Circle Packing</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <!-- Home Tab Start-->
+      <div class="tab-pane fade show active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab" tabindex="0">
+        <h1>Welcome to our data visualization project!</h1>
+      </div>
+      <!-- Home Tab End -->
 
-    <!-- Start -->
-    <div id="circle-packing"></div>
+      <!-- Bar Chart Tab -->
+      <div class="tab-pane fade" id="nav-barchart" role="tabpanel" aria-labelledby="nav-barchart-tab" tabindex="0">Under Construction</div>
+      <!-- Bar Chart Tab End -->
 
-    <!-- End -->
+      <!-- Scatter Plot Tab -->
+      <div class="tab-pane fade" id="nav-scatterplot" role="tabpanel" aria-labelledby="nav-scatterplot-tab" tabindex="0">
+        <div id="scatter-plot"></div>
+        <label>X-Axis Column</label>
+        <div class="dropdown" id="scatter-plot-x-axis-dropdown">
+          <button class="btn btn-secondary dropdown-toggle" id="scatter-plot-current-x-axis" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select X-Axis</button>
+          <ul class="dropdown-menu" id="scatter-plot-x-axis" aria-labelledby="dropdownMenuLink"></ul>
+        </div>
+      </div>
+      <!-- Scatter Plot Tab -->
+      
+      <!-- Circle Packing Tab -->
+      <div class="tab-pane fade" id="nav-circlepacking" role="tabpanel" aria-labelledby="nav-circlepacking-tab" tabindex="0"><div id="circle-packing"></div></div>
+      <!-- Circle Packing Tab -->
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <script src="./app.js" type="module"></script>
   </body>
 </html>
