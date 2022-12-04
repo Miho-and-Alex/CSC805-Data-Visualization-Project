@@ -1,6 +1,4 @@
-import * as d3 from "https://cdn.skypack.dev/d3@7"
 import { starPlot } from './star-plot.js'
-import { selectAll } from "https://cdn.skypack.dev/d3-selection@3"
 
 let margin = {top: 0, right: 80, bottom: 200, left: 80},
     width = 1200 - margin.right - margin.left,

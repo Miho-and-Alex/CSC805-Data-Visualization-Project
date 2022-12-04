@@ -1,5 +1,3 @@
-import * as d3 from 'https://cdn.skypack.dev/d3@7'
-import { selectAll } from 'https://cdn.skypack.dev/d3-selection@3'
 
 function barChart(data, column) {
   // First clear the div

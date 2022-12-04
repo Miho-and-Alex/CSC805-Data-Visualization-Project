@@ -1,4 +1,3 @@
-import * as d3 from 'https://cdn.skypack.dev/d3@7'
 
 let whole_dataset = await d3.csv('https://raw.githubusercontent.com/Miho-and-Alex/CSC805-Data-Visualization-Project/main/docs/data/removed-strings.csv', data => ({
   ...data,

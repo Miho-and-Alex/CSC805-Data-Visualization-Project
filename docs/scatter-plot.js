@@ -1,5 +1,3 @@
-import * as d3 from "https://cdn.skypack.dev/d3@7"
-import { selectAll } from "https://cdn.skypack.dev/d3-selection@3"
 
 // set the dimensions and margins of the graph
 let margin = {top: 40, right: 150, bottom: 40, left: 80},
