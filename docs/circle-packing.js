@@ -46,7 +46,7 @@ async function main() {
         .style("cursor", "pointer")
         .on("click", (event) => zoom(event, root));
 
-    let mouseclick = function(event, d) {
+    let mouseclick = async function(event, d) {
        tooltip
             .text(d.song + " by " + d.artist)
             .style("left", (event.x) + 10 + "px")
@@ -55,7 +55,9 @@ async function main() {
             .style("height", height * 0.5 + "px")
             .style("opacity", 1)
 
-        tooltip.append(() => starPlot([d], event.x, event.y))
+        let averages = await d3.json('./data/means.json')
+        console.log(averages);
+        tooltip.append(() => starPlot([d, averages], data))
         tooltipOn = true
 
         //starPlot([d], event.x, event.y)

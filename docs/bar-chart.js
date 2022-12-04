@@ -1,4 +1,3 @@
-
 function barChart(data, column) {
   // First clear the div
   d3.select('#dropdown-label').text(column)
