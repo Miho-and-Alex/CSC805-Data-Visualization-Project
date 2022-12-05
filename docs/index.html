@@ -76,7 +76,6 @@
           >
             Star Plot
           </button>
- 
         </div>
       </nav>
       <div class="tab-content p-3" id="nav-tabContent">
@@ -121,9 +120,9 @@
           aria-labelledby="nav-barchart-tab"
           tabindex="0"
         >
-          <div class="dropdown">
+          <div class="dropdown-y">
             <button
-              id="dropdown-label"
+              id="dropdown-label-y"
               class="btn btn-secondary dropdown-toggle"
               type="button"
               data-bs-toggle="dropdown"
@@ -132,6 +131,19 @@
               should be set with javascript
             </button>
             <ul id="bar-chart-y-axis-dropdown" class="dropdown-menu"></ul>
+          </div>
+        <div id="bar-chart-area"></div>
+          <div class="dropdown-x">
+            <button
+              id="dropdown-label-x"
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              should be set with javascript
+            </button>
+            <ul id="bar-chart-x-axis-dropdown" class="dropdown-menu"></ul>
           </div>
         </div>
         <!-- Bar Chart Tab End -->
@@ -183,7 +195,8 @@
           aria-labelledby="nav-starplot-tab"
           tabindex="0"
         >
-          <div id="star-plot"></div>
+          <div id="star-plot-1"></div>
+          <div id="star-plot-2"></div>
         </div>
         <!--  Star Plot Tab -->
       </div>

@@ -106,7 +106,7 @@ async function main() {
     zoomTo([root.x, root.y, root.r * 2]);
     
     function zoomTo(v) {
-        console.log("zoomTo")
+        //console.log("zoomTo")
         const k = width / v[2];
         view = v;
         label.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);

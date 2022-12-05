@@ -1,6 +1,4 @@
 export function starPlot(samples, data) {
-
-
   let cx = 240
   let cy = 190
   const MARGIN = { LEFT: 0, RIGHT: 0, TOP: 0, BOTTOM: 0 }
@@ -80,7 +78,7 @@ export function starPlot(samples, data) {
     .x(d => d.x)
     .y(d => d.y)
   //let colors = ['darkorange', 'gray', 'navy']
-  let colors = ['pink', 'gray', 'orange']
+  let colors = ['pink', 'lightpink', 'orange']
 
   g.selectAll('path')
     .data(samples)
@@ -96,6 +94,7 @@ export function starPlot(samples, data) {
 }
 
 function getPathCoordinates(data, sample, columns, radius, cx, cy) {
+  console.log('dataa', sample)
   let coordinates = []
   for (var i = 0; i < columns.length; i++) {
     let column = columns[i]
@@ -108,6 +107,7 @@ function getPathCoordinates(data, sample, columns, radius, cx, cy) {
     //console.log(column, sample[column], coord)
     coordinates.push(coord)
   }
+  console.log('coordinates', coordinates)
   return coordinates
 }
 
@@ -154,8 +154,28 @@ async function main() {
   )
 
   let averaged_data = await d3.json('./data/means.json')
-  console.log(averaged_data);
+  let top_3 = await d3.csv('./data/top_3.csv', data => ({
+    ...data,
+    year: +data.year,
+    duration_ms: +data.duration_ms,
+    explicit: data.explicit ? 1 : 0,
+    popularity: +data.popularity,
+    danceability: +data.danceability,
+    energy: +data.energy,
+    key: +data.key,
+    loudness: +data.loudness,
+    mode: +data.mode,
+    speechiness: +data.speechiness,
+    acousticness: +data.acousticness,
+    instrumentalness: +data.instrumentalness,
+    liveness: +data.liveness,
+    valence: +data.valence,
+    tempo: +data.tempo,
+  }))
+  console.log(top_3)
+  console.log(averaged_data)
 
-  d3.select('#star-plot').append(() => starPlot([averaged_data], data))
+  d3.select('#star-plot-1').append(() => starPlot([averaged_data], data))
+  d3.select('#star-plot-1').append(() => starPlot(top_3, data))
 }
 main()
