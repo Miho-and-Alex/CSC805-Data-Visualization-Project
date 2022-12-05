@@ -10,6 +10,6 @@ d3.select('#circle-packing-icon').on('click', () => {
   document.getElementById('nav-circlepacking-tab').click()
 })
 
-d3.select('#star-plot-image').on('click', () => {
-  document.getElementById('nav-circlepacking-tab').click()
+d3.select('#star-plot-icon').on('click', () => {
+  document.getElementById('nav-starplot-tab').click()
 })
