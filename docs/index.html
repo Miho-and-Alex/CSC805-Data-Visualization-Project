@@ -88,26 +88,36 @@
           tabindex="0"
         >
           <h1>Welcome to our data visualization project!</h1>
-          <div id="home-chart-icons">
-            <img
-              id="bar-chart-icon"
-              src="./bar-chart.png"
-              class="hover-icons zoom"
-              alt="bar-chart"
-              tabindex="0"
-            />
-            <img
-              id="scatter-plot-icon"
-              src="./scatter-plot-icon.png"
-              class="hover-icons zoom"
-              alt="scatter-plot-icon"
-            />
-            <img
-              id="circle-packing-icon"
-              src="./circle-packing-screenshot.png"
-              class="hover-icons zoom"
-              alt="circle-packing-screenshot"
-            />
+          <div id="home-chart-icons" class="container">
+            <div class="row">
+              <img
+                id="bar-chart-icon"
+                src="./bar-chart.png"
+                class="hover-icons zoom col"
+                alt="bar-chart"
+                tabindex="0"
+              />
+              <img
+                id="scatter-plot-icon"
+                src="./scatter-plot-icon.png"
+                class="hover-icons zoom col"
+                alt="scatter-plot-icon"
+              />
+            </div>
+            <div class="row">
+              <img
+                id="circle-packing-icon"
+                src="./circle-packing-screenshot.png"
+                class="hover-icons zoom col"
+                alt="circle-packing-screenshot"
+              />
+              <img
+                id="star-plot-icon"
+                src="./star-plot.png"
+                class="hover-icons zoom col"
+                alt="star plot image"
+              />
+            </div>
           </div>
         </div>
         <!-- Home Tab End -->
@@ -132,7 +142,7 @@
             </button>
             <ul id="bar-chart-y-axis-dropdown" class="dropdown-menu"></ul>
           </div>
-        <div id="bar-chart-area"></div>
+          <div id="bar-chart-area"></div>
           <div class="dropdown-x">
             <button
               id="dropdown-label-x"

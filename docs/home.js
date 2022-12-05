@@ -9,3 +9,7 @@ d3.select('#scatter-plot-icon').on('click', () => {
 d3.select('#circle-packing-icon').on('click', () => {
   document.getElementById('nav-circlepacking-tab').click()
 })
+
+d3.select('#star-plot-image').on('click', () => {
+  document.getElementById('nav-circlepacking-tab').click()
+})

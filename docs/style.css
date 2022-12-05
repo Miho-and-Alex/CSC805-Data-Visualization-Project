@@ -1,36 +1,32 @@
 body {
-    margin: 20px;
+  margin: 20px;
 }
 
 svg {
-    outline-offset: 2px;
+  outline-offset: 2px;
 }
 
 h1 {
-    z-index: 999;
-    position:relative;
+  z-index: 999;
+  position: relative;
 }
 
 #home-chart-icons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    margin-top: 300px;
-    z-index: -999;
+    margin-top: -50px;
+  z-index: -999;
 }
 
 .hover-icons {
-    display: flex;
-    margin: 50px;
-    width: 200px;
+  margin: 100px;
+  width: 100px;
 }
 
 .zoom {
-    transition: transform .3s; /* Animation */
-  }
+  transition: transform 0.3s; /* Animation */
+}
 
-  .zoom:hover {
-    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
-  }
+.zoom:hover {
+  transform: scale(
+    1.5
+  ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
