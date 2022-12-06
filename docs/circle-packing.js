@@ -12,9 +12,7 @@ let pack = data => d3.pack()
     .sort((a, b) => b.value - a.value));
 
 let color = d3.scaleLinear()
-    .domain([0, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-    .interpolate(d3.interpolateHcl)
+    .range(["#203BAB", "#B7EFBC"])
 
 let tooltip = d3.select("#circle-packing")
     .append("div")

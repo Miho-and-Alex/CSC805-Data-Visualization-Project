@@ -108,7 +108,7 @@ async function main() {
         .attr("cx", function (d) { return x(d.value); } )
         .attr("cy", function (d) { return y(d.popularity); } )
         .attr("r", 5.5)
-        .style("fill", "#69b3a2")
+        .style("fill", "#1DB954")
         .style("opacity", 0.4)
         .on("mouseenter", mouseover )
         .on("mousemove", mousemove )
