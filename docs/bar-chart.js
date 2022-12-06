@@ -1,13 +1,13 @@
-function barChart(data, column) {
-  d3.select('#dropdown-label-y').text(column)
-  d3.select('#dropdown-label-x').text('Year')
+function barChart(data, column, div) {
+  //d3.select('#dropdown-label-y-' + div[div.length-1]).text(column)
+  //d3.select('#dropdown-label-x').text('Year')
 
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
   const svg = d3
-    .select('#bar-chart-area')
+    .select(div)
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
@@ -74,7 +74,7 @@ function barChart(data, column) {
     .attr('x', d => x(d.year))
     .attr('width', x.bandwidth)
     .attr('height', d => HEIGHT - y(d[column]))
-    .attr('fill', 'red')
+    .attr('fill', 'green')
 
   return { g, HEIGHT }
 }
@@ -173,12 +173,11 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .attr('height', d => h - y(d[yMetric]))
     .attr('fill', function (d) {
       let rgbStr =
-        'rgb(' +
-        Math.round(colorScale(d[yMetric])) +
-        ',0,' +
+        'rgb(0,' +
+        Math.round(colorScale(d[yMetric])) + ',' +
         Math.round(colorScale(d[yMetric]) / 10) +
         ')'
-      //console.log(rgbStr)
+      console.log(rgbStr)
       return rgbStr
     })
 }
@@ -222,9 +221,15 @@ let main = async () => {
     tempo: +data.tempo,
   }))
 
-  let { g: barChartSVG, HEIGHT } = barChart(groupedByYear, 'popularity')
-  addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT, 'y')
-  addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT, 'x')
+  let { g: firstBarChartSVG, HEIGHT } = barChart(groupedByYear, 'popularity', '#bar-chart-area-1')
+  addDropdownMenu({groupedByYear, groupedByPopularity}, firstBarChartSVG, HEIGHT, 'y')
+  addDropdownMenu({groupedByYear, groupedByPopularity}, firstBarChartSVG, HEIGHT, 'x')
+
+  let { g: barChartSVG, HEIGHT2 } = barChart(groupedByYear, 'year', '#bar-chart-area-2')
+  //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'y')
+  //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'x')
+
+
 }
 
 main()

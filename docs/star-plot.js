@@ -1,7 +1,7 @@
-export function starPlot(samples, data) {
+export function starPlot(samples, data, title) {
   let cx = 240
   let cy = 190
-  const MARGIN = { LEFT: 0, RIGHT: 0, TOP: 0, BOTTOM: 0 }
+  const MARGIN = { LEFT: 0, RIGHT: 0, TOP: 20, BOTTOM: 0 }
   const WIDTH = 450 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
   const radius = 130
@@ -30,7 +30,7 @@ export function starPlot(samples, data) {
 
   let rings = [1, 2, 3, 4, 5]
   let ringScale = d3.scaleLinear().domain([0, rings.length]).range([0, radius])
-  let ringColors = ['lightblue', 'lightgreen', 'pink', 'tan', 'lightorange']
+  let ringColors = ['lightblue', 'lightgreen', 'pink', 'tan', 'gray']
 
   // adding rings
   g.selectAll('circle')
@@ -56,7 +56,7 @@ export function starPlot(samples, data) {
     let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
     let line_coordinate = angleToCoordinate(angle, rings.length, ringScale, cx, cy)
 
-    let label_coordinate = angleToCoordinate(angle, rings.length + 1.1, ringScale, cx, cy)
+    let label_coordinate = angleToCoordinate(angle, rings.length + .9, ringScale, cx, cy)
 
     //draw axis line
     g.append('line')
@@ -68,8 +68,9 @@ export function starPlot(samples, data) {
 
     //draw axis label
     g.append('text')
-      .attr('x', label_coordinate.x - 25)
+      .attr('x', label_coordinate.x - 30)
       .attr('y', label_coordinate.y)
+      .style('fill', 'green')
       .text(column)
   }
 
@@ -89,6 +90,15 @@ export function starPlot(samples, data) {
     .attr('fill', (d, i) => colors[i % 3])
     .attr('stroke-opacity', 1)
     .attr('opacity', 0.5)
+
+  // title
+  g.append('text')
+    .attr('x', WIDTH / 2)
+    .attr('y', 10)
+    .attr('text-anchor', 'middle')
+    .style('fill', 'blue')
+    .style('font-size', '20px')
+    .text(title)
 
   return svg.node()
 }
@@ -175,7 +185,7 @@ async function main() {
   console.log(top_3)
   console.log(averaged_data)
 
-  d3.select('#star-plot-1').append(() => starPlot([averaged_data], data))
-  d3.select('#star-plot-1').append(() => starPlot(top_3, data))
+  d3.select('#star-plot-1').append(() => starPlot([averaged_data], data, 'Total Average'))
+  d3.select('#star-plot-1').append(() => starPlot(top_3, data, 'Top 3 most popular songs'))
 }
 main()
