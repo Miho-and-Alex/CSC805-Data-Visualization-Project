@@ -63,6 +63,7 @@ async function main() {
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
+        .style('position', 'absolute')
         .style("font-size", "12px")
         .style("background-color", "white")
         .style("border", "solid")
