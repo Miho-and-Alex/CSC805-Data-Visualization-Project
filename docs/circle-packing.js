@@ -1,3 +1,6 @@
+/*global d3*/
+/*eslint no-undef: "error"*/
+
 import { starPlot } from './star-plot.js'
 
 let margin = {top: 0, right: 80, bottom: 200, left: 80},
@@ -6,8 +9,7 @@ let margin = {top: 0, right: 80, bottom: 200, left: 80},
 
 let pack = data => d3.pack()
     .size([width, height])
-    .padding(3)
-    (d3.hierarchy(data)
+    .padding(3)(d3.hierarchy(data)
     .count(d => d.value)
     .sort((a, b) => b.value - a.value));
 

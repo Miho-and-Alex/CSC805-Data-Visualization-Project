@@ -1,5 +1,4 @@
 /*global d3*/
-/*eslint no-undef: "error"*/
 
 import { groupedByYear, groupedByPopularity } from './data.js'
 
@@ -79,24 +78,28 @@ function barChart(data, div, yLabel, xLabel) {
     .attr('height', d => HEIGHT - y(d[yLabel]))
     .attr('fill', 'green')
 
-  addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, 'y', div)
-  addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, 'x', div)
+  addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, div)
 
   return { g, HEIGHT }
 }
 
-async function addDropdownMenu(data, svg, HEIGHT, axis, div) {
-  let dropdown = d3.select(div + ` #bar-chart-${axis}-axis-dropdown`)
-  let yMetrics = data.groupedByYear.columns
+async function addDropdownMenu(data, svg, HEIGHT, div) {
+  let selector = div + ' .x-axis.dropdown-men'
+  console.log(selector);
+  let dropdownX = d3.select(div + ' .dropdown-menu.x-axis')
+  let dropdownY = d3.select(div + ' .dropdown-menu.y-axis')
+  console.log(dropdownY);
   let xMetrics = ['year', 'bins']
+  let yMetrics = data.groupedByYear.columns
   for (let yMetric of yMetrics) {
+    console.log(yMetric);
     let button = document.createElement('button')
     button.addEventListener('click', () => {
       let currX = d3.select('#dropdown-label-x').text()
-      console.log('currX', currX)
       updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, yMetric)
     })
-    addButtonEntry(dropdown, button)
+    button.innerHTML = yMetric
+    addButtonEntry(dropdownY, button)
   }
   for (let xMetric of xMetrics) {
     let button = document.createElement('button')
@@ -104,8 +107,8 @@ async function addDropdownMenu(data, svg, HEIGHT, axis, div) {
       let currY = d3.select('#dropdown-label-y').text()
       updateXY(data, svg, HEIGHT, xMetric, currY)
     })
-    button.innerHTML = xMetric == 'bins' ? 'popularity' : newMetric
-    addButtonEntry(dropdown, button)
+    button.innerHTML = xMetric == 'bins' ? 'popularity' : xMetric
+    addButtonEntry(dropdownX, button)
   }
 }
 
@@ -179,10 +182,7 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .data(data)
     .transition() // <---- Here is the transition
     .duration(2000) // 2 seconds
-    .attr('y', d => {
-      console.log(d[yMetric])
-      return y(d[yMetric])
-    })
+    .attr('y', d => y(d[yMetric]))
     //.attr('x', d => x(d[xMetric]))
     .attr('height', d => h - y(d[yMetric]))
     .attr('fill', function (d) {
@@ -192,14 +192,13 @@ function updateXY(data, svg, h, xMetric, yMetric) {
         ',' +
         Math.round(colorScale(d[yMetric]) / 10) +
         ')'
-      console.log(rgbStr)
       return rgbStr
     })
 }
 
 let main = async () => {
   barChart(groupedByYear, '#bar-chart-area-1', 'popularity', 'year')
-  barChart(groupedByPopularity, '#bar-chart-area-2', 'year', 'popularity')
+  //barChart(groupedByPopularity, '#bar-chart-area-2', 'year', 'popularity')
   //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'y')
   //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'x')
 }

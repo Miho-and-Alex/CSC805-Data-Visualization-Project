@@ -1,3 +1,6 @@
+/*global d3*/
+/*eslint no-undef: "error"*/
+
 export function starPlot(samples, data, title) {
   let cx = 240
   let cy = 190
@@ -46,7 +49,7 @@ export function starPlot(samples, data, title) {
   g.selectAll('text')
     .data(rings)
     .join('circle')
-    .attr('x', ring => cx)
+    .attr('x', cx)
     .attr('y', ring => cy - ringScale(ring))
     .text(ring => ring.toString())
 
@@ -104,7 +107,6 @@ export function starPlot(samples, data, title) {
 }
 
 function getPathCoordinates(data, sample, columns, radius, cx, cy) {
-  console.log('dataa', sample)
   let coordinates = []
   for (var i = 0; i < columns.length; i++) {
     let column = columns[i]
@@ -117,7 +119,6 @@ function getPathCoordinates(data, sample, columns, radius, cx, cy) {
     //console.log(column, sample[column], coord)
     coordinates.push(coord)
   }
-  console.log('coordinates', coordinates)
   return coordinates
 }
 
@@ -182,8 +183,6 @@ async function main() {
     valence: +data.valence,
     tempo: +data.tempo,
   }))
-  console.log(top_3)
-  console.log(averaged_data)
 
   d3.select('#star-plot-1').append(() => starPlot([averaged_data], data, 'Total Average'))
   d3.select('#star-plot-1').append(() => starPlot(top_3, data, 'Top 3 most popular songs'))
