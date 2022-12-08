@@ -1,0 +1,22 @@
+{
+  "name": "docs-data-visualization",
+  "version": "1.0.0",
+  "description": "A static website that showcases charts made with d3.js with music data",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Miho-and-Alex/CSC805-Data-Visualization-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Miho-and-Alex/CSC805-Data-Visualization-Project/issues"
+  },
+  "homepage": "https://github.com/Miho-and-Alex/CSC805-Data-Visualization-Project#readme",
+  "devDependencies": {
+    "eslint": "^8.29.0"
+  }
+}

@@ -1,3 +1,6 @@
+/*global d3*/
+/*eslint no-undef: "error"*/
+
 import { groupedByYear, groupedByPopularity } from './data.js'
 
 function barChart(data, div, yLabel, xLabel) {
@@ -8,16 +11,13 @@ function barChart(data, div, yLabel, xLabel) {
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
-
   const svg = d3
     .select(div + ' > #bar-chart')
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
 
-  const g = svg
-    .append('g')
-    .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
+  const g = svg.append('g').attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
 
   // X label
   g.append('text')
@@ -79,40 +79,44 @@ function barChart(data, div, yLabel, xLabel) {
     .attr('height', d => HEIGHT - y(d[yLabel]))
     .attr('fill', 'green')
 
-  addDropdownMenu({groupedByYear, groupedByPopularity}, g, HEIGHT, 'y', div)
-  addDropdownMenu({groupedByYear, groupedByPopularity}, g, HEIGHT, 'x', div)
+  addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, 'y', div)
+  addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, 'x', div)
 
   return { g, HEIGHT }
 }
 
 async function addDropdownMenu(data, svg, HEIGHT, axis, div) {
-  let divId = div + ` #bar-chart-${axis}-axis-dropdown`
-  let dropdown = d3.select(divId)
-  let columns = axis === 'y' ? data.groupedByYear.columns : ['year', 'bins']
-
-  for (let newMetric of columns) {
+  let dropdown = d3.select(div + ` #bar-chart-${axis}-axis-dropdown`)
+  let yMetrics = data.groupedByYear.columns
+  let xMetrics = ['year', 'bins']
+  for (let yMetric of yMetrics) {
     let button = document.createElement('button')
     button.addEventListener('click', () => {
-      if (axis === 'y') {
-        let currX = d3.select('#dropdown-label-x').text()
-        console.log('currX', currX)
-        updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, newMetric)
-      }
-      else if (axis === 'x') {
-        let currY = d3.select('#dropdown-label-y').text()
-        updateXY(data, svg, HEIGHT, newMetric, currY)
-      }
+      let currX = d3.select('#dropdown-label-x').text()
+      console.log('currX', currX)
+      updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, yMetric)
     })
-    button.classList.add('dropdown-item')
-    button.innerHTML = newMetric == 'bins' ? 'popularity' : newMetric
-    let entry = document.createElement('li')
-    entry.appendChild(button)
-    dropdown.append(()=>entry)
+    addButtonEntry(dropdown, button)
+  }
+  for (let xMetric of xMetrics) {
+    let button = document.createElement('button')
+    button.addEventListener('click', () => {
+      let currY = d3.select('#dropdown-label-y').text()
+      updateXY(data, svg, HEIGHT, xMetric, currY)
+    })
+    button.innerHTML = xMetric == 'bins' ? 'popularity' : newMetric
+    addButtonEntry(dropdown, button)
   }
 }
 
-function updateXY(data, svg, h, xMetric, yMetric) {
+function addButtonEntry(dropdown, button) {
+  button.classList.add('dropdown-item')
+  let entry = document.createElement('li')
+  entry.appendChild(button)
+  dropdown.append(() => entry)
+}
 
+function updateXY(data, svg, h, xMetric, yMetric) {
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
@@ -134,7 +138,6 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .paddingInner(0.3)
     .paddingOuter(0.2)
 
-
   const y = d3
     .scaleLinear()
     .domain([0, d3.max(data, d => (d[yMetric] ? d[yMetric] : 0))])
@@ -154,7 +157,8 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     return `(${parseInt(split[0])}, ${parseInt(split[1])}]`
   })
 
-  svg.append('g')
+  svg
+    .append('g')
     .attr('class', 'x axis x-axis')
     .attr('transform', `translate(0, ${HEIGHT})`)
     .call(xAxisCall)
@@ -184,7 +188,8 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .attr('fill', function (d) {
       let rgbStr =
         'rgb(0,' +
-        Math.round(colorScale(d[yMetric])) + ',' +
+        Math.round(colorScale(d[yMetric])) +
+        ',' +
         Math.round(colorScale(d[yMetric]) / 10) +
         ')'
       console.log(rgbStr)
