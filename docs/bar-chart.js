@@ -1,13 +1,16 @@
-function barChart(data, column, div) {
-  //d3.select('#dropdown-label-y-' + div[div.length-1]).text(column)
-  //d3.select('#dropdown-label-x').text('Year')
+import { groupedByYear, groupedByPopularity } from './data.js'
+
+function barChart(data, div, yLabel, xLabel) {
+  d3.select(div + ' #dropdown-label-y').text(yLabel)
+  d3.select(div + ' #dropdown-label-x').text(xLabel)
 
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
+
   const svg = d3
-    .select(div)
+    .select(div + ' > #bar-chart')
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
@@ -34,7 +37,7 @@ function barChart(data, column, div) {
     .attr('font-size', '20px')
     .attr('text-anchor', 'middle')
     .attr('transform', 'rotate(-90)')
-    .text(column)
+    .text(yLabel)
 
   const x = d3
     .scaleBand()
@@ -45,7 +48,7 @@ function barChart(data, column, div) {
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, d => (d[column] ? d[column] : 0))])
+    .domain([0, d3.max(data, d => (d[yLabel] ? d[yLabel] : 0))])
     .range([HEIGHT, 0])
 
   const xAxisCall = d3.axisBottom(x)
@@ -70,18 +73,21 @@ function barChart(data, column, div) {
   rects
     .enter()
     .append('rect')
-    .attr('y', d => y(d[column]))
+    .attr('y', d => y(d[yLabel]))
     .attr('x', d => x(d.year))
     .attr('width', x.bandwidth)
-    .attr('height', d => HEIGHT - y(d[column]))
+    .attr('height', d => HEIGHT - y(d[yLabel]))
     .attr('fill', 'green')
+
+  addDropdownMenu({groupedByYear, groupedByPopularity}, g, HEIGHT, 'y', div)
+  addDropdownMenu({groupedByYear, groupedByPopularity}, g, HEIGHT, 'x', div)
 
   return { g, HEIGHT }
 }
 
-async function addDropdownMenu(data, svg, HEIGHT, axis) {
-  let divId = `bar-chart-${axis}-axis-dropdown`
-  let dropdown = document.getElementById(divId)
+async function addDropdownMenu(data, svg, HEIGHT, axis, div) {
+  let divId = div + ` #bar-chart-${axis}-axis-dropdown`
+  let dropdown = d3.select(divId)
   let columns = axis === 'y' ? data.groupedByYear.columns : ['year', 'bins']
 
   for (let newMetric of columns) {
@@ -89,8 +95,8 @@ async function addDropdownMenu(data, svg, HEIGHT, axis) {
     button.addEventListener('click', () => {
       if (axis === 'y') {
         let currX = d3.select('#dropdown-label-x').text()
-        console.log(currX);
-        updateXY(data, svg, HEIGHT, currX == 'Popularity' ? 'bins' : currX, newMetric)
+        console.log('currX', currX)
+        updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, newMetric)
       }
       else if (axis === 'x') {
         let currY = d3.select('#dropdown-label-y').text()
@@ -98,9 +104,10 @@ async function addDropdownMenu(data, svg, HEIGHT, axis) {
       }
     })
     button.classList.add('dropdown-item')
-    button.innerHTML = newMetric == 'bins' ? 'Popularity' : newMetric
-    let entry = document.createElement('li').appendChild(button)
-    dropdown.appendChild(entry)
+    button.innerHTML = newMetric == 'bins' ? 'popularity' : newMetric
+    let entry = document.createElement('li')
+    entry.appendChild(button)
+    dropdown.append(()=>entry)
   }
 }
 
@@ -168,7 +175,10 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .data(data)
     .transition() // <---- Here is the transition
     .duration(2000) // 2 seconds
-    .attr('y', d => y(d[yMetric]))
+    .attr('y', d => {
+      console.log(d[yMetric])
+      return y(d[yMetric])
+    })
     //.attr('x', d => x(d[xMetric]))
     .attr('height', d => h - y(d[yMetric]))
     .attr('fill', function (d) {
@@ -183,53 +193,10 @@ function updateXY(data, svg, h, xMetric, yMetric) {
 }
 
 let main = async () => {
-  let groupedByYear = await d3.csv('../data/grouped-by-year.csv', data => ({
-    ...data,
-    year: +data.year,
-    duration_ms: +data.duration_ms,
-    explicit: +data.explicit,
-    popularity: +data.popularity,
-    danceability: +data.danceability,
-    energy: +data.energy,
-    key: +data.key,
-    loudness: +data.loudness,
-    mode: +data.mode,
-    speechiness: +data.speechiness,
-    acousticness: +data.acousticness,
-    instrumentalness: +data.instrumentalness,
-    liveness: +data.liveness,
-    valence: +data.valence,
-    tempo: +data.tempo,
-  }))
-
-  let groupedByPopularity = await d3.csv('../data/pop_binned_mean_df.csv', data => ({
-    ...data,
-    year: +data.year,
-    duration_ms: +data.duration_ms,
-    explicit: +data.explicit,
-    popularity: +data.popularity,
-    danceability: +data.danceability,
-    energy: +data.energy,
-    key: +data.key,
-    loudness: +data.loudness,
-    mode: +data.mode,
-    speechiness: +data.speechiness,
-    acousticness: +data.acousticness,
-    instrumentalness: +data.instrumentalness,
-    liveness: +data.liveness,
-    valence: +data.valence,
-    tempo: +data.tempo,
-  }))
-
-  let { g: firstBarChartSVG, HEIGHT } = barChart(groupedByYear, 'popularity', '#bar-chart-area-1')
-  addDropdownMenu({groupedByYear, groupedByPopularity}, firstBarChartSVG, HEIGHT, 'y')
-  addDropdownMenu({groupedByYear, groupedByPopularity}, firstBarChartSVG, HEIGHT, 'x')
-
-  let { g: barChartSVG, HEIGHT2 } = barChart(groupedByYear, 'year', '#bar-chart-area-2')
+  barChart(groupedByYear, '#bar-chart-area-1', 'popularity', 'year')
+  barChart(groupedByPopularity, '#bar-chart-area-2', 'year', 'popularity')
   //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'y')
   //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'x')
-
-
 }
 
 main()
