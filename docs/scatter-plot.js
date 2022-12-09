@@ -42,7 +42,7 @@ async function main() {
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
         .call(g => g.append("text")
-        .attr("id", "x-axis-label")
+        .attr("id", "scatter-plot-x-axis-label")
         .attr("x", width)
         .attr("y", margin.bottom - 4)
         .attr("fill", "currentColor")
@@ -126,7 +126,7 @@ async function main() {
                 .domain([...new Set(selectedData.map(d => d.value))])
                 .range([0, width]);
 
-            d3.select("#x-axis-label")
+            d3.select("#scatter-plot-x-axis-label")
                 .text(selectedColumn + " →")
 
             xAxis.transition()
@@ -140,7 +140,7 @@ async function main() {
                 .domain([d3.min(selectedData, function(d) { return +d.value; }), d3.max(selectedData, function(d) { return +d.value; })])
                 .range([0, width]);
 
-            d3.select("#x-axis-label")
+            d3.select("#scatter-plot-x-axis-label")
                 .text(selectedColumn + " →")
 
             xAxis.transition()
