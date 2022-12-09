@@ -2,16 +2,28 @@
 
 import { groupedByYear, groupedByPopularity } from './data.js'
 
+function yScaleDomain(yLabel, data) {
+  let upperbound = d3.max(data, d => d[yLabel])
+  let lowerbound = d3.min(data, d => d[yLabel])
+  if (yLabel == 'year') {
+    return [1990, upperbound]
+  } else if (d3.min(data, d => d[yLabel]) < 0) {
+    return [lowerbound, upperbound]
+  } else {
+    return [0, upperbound]
+  }
+}
+
 function barChart(data, div, xLabel, yLabel) {
-  d3.select(div + ' #dropdown-label-y').text(yLabel)
-  d3.select(div + ' #dropdown-label-x').text(xLabel)
+  d3.select(div + ' .dropdown-label-y').text(yLabel)
+  d3.select(div + ' .dropdown-label-x').text(xLabel == 'bins' ? 'popularity' : xLabel)
 
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
   const svg = d3
-    .select(div + ' > #bar-chart')
+    .select(div + ' > .chart')
     .append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
@@ -26,7 +38,7 @@ function barChart(data, div, xLabel, yLabel) {
     .attr('y', HEIGHT + 60)
     .attr('font-size', '20px')
     .attr('text-anchor', 'middle')
-    .text(xLabel)
+    .text(xLabel == 'bins' ? 'popularity' : xLabel)
 
   // Y label
   g.append('text')
@@ -45,10 +57,7 @@ function barChart(data, div, xLabel, yLabel) {
     .paddingInner(0.3)
     .paddingOuter(0.2)
 
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, d => (d[yLabel] ? d[yLabel] : 0))])
-    .range([HEIGHT, 0])
+  const y = d3.scaleLinear().domain(yScaleDomain(yLabel, data)).range([HEIGHT, 0])
 
   const xAxisCall = d3.axisBottom(x).tickFormat(parseBins)
   g.append('g')
@@ -74,12 +83,15 @@ function barChart(data, div, xLabel, yLabel) {
     .append('rect')
     .attr('y', d => y(d[yLabel]))
     .attr('x', d => {
-      console.log('xLabel', xLabel)
-      console.log('xLabel', d[xLabel])
+      //console.log('xLabel', xLabel)
+      //console.log('xLabel', d[xLabel])
       return x(d[xLabel])
     })
     .attr('width', x.bandwidth)
-    .attr('height', d => HEIGHT - y(d[yLabel]))
+    .attr('height', d => {
+      //console.log(yLabel, d[yLabel]);
+      if (!d[yLabel]) return HEIGHT
+      else return HEIGHT - y(d[yLabel])})
     .attr('fill', 'green')
 
   addDropdownMenu({ groupedByYear, groupedByPopularity }, g, HEIGHT, div)
@@ -95,8 +107,11 @@ async function addDropdownMenu(data, svg, HEIGHT, div) {
   for (let yMetric of yMetrics) {
     let button = document.createElement('button')
     button.addEventListener('click', () => {
-      let currX = d3.select('#dropdown-label-x').text()
-      updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, yMetric)
+      let currX = d3.select(div + ' .dropdown-label-x').text()
+      updateXY(data, svg, HEIGHT, currX == 'popularity' ? 'bins' : currX, yMetric, div)
+      // update y-axis label
+      d3.select(div + ' .dropdown-label-y').text(yMetric)
+      d3.select(div + ' .y.axis-label').text(yMetric)
     })
     button.innerHTML = yMetric
     addButtonEntry(dropdownY, button)
@@ -104,8 +119,11 @@ async function addDropdownMenu(data, svg, HEIGHT, div) {
   for (let xMetric of xMetrics) {
     let button = document.createElement('button')
     button.addEventListener('click', () => {
-      let currY = d3.select('#dropdown-label-y').text()
-      updateXY(data, svg, HEIGHT, xMetric, currY)
+      let currY = d3.select(div + ' .dropdown-label-y').text()
+      updateXY(data, svg, HEIGHT, xMetric, currY, div)
+      // update x-axis label
+      d3.select(div + ' .dropdown-label-x').text(xMetric == 'bins' ? 'popularity' : xMetric)
+      d3.select(div + ' .x.axis-label').text(xMetric == 'bins' ? 'popularity' : xMetric)
     })
     button.innerHTML = xMetric == 'bins' ? 'popularity' : xMetric
     addButtonEntry(dropdownX, button)
@@ -119,15 +137,18 @@ function addButtonEntry(dropdown, button) {
   dropdown.append(() => entry)
 }
 
-function updateXY(data, svg, h, xMetric, yMetric) {
+function updateXY(data, svg, h, xMetric, yMetric, div) {
   const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 70 }
   const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
   const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
 
   data = xMetric === 'bins' ? data.groupedByPopularity : data.groupedByYear
 
-  svg.selectAll('.y-axis').remove()
-  svg.selectAll('.x-axis').remove()
+  svg.selectAll(div + ' .y-axis').remove()
+  svg.selectAll(div + ' .x-axis').remove()
+//  svg.select(div + ' .x-axis-label').remove()
+//  svg.select(div + ' .y-axis-label').remove()
+  
 
   const x = d3
     .scaleBand()
@@ -136,10 +157,7 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .paddingInner(0.3)
     .paddingOuter(0.2)
 
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, d => (d[yMetric] ? d[yMetric] : 0))])
-    .range([h, 0])
+  const y = d3.scaleLinear().domain(yScaleDomain(yMetric, data)).range([h, 0])
 
   const yAxisCall = d3
     .axisLeft(y)
@@ -176,7 +194,11 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .duration(2000) // 2 seconds
     .attr('y', d => y(d[yMetric]))
     //.attr('x', d => x(d[xMetric]))
-    .attr('height', d => h - y(d[yMetric]))
+    .attr('height', d => {
+      //console.log('Height', HEIGHT, yMetric, d[yMetric], y(d[yMetric]))
+      if (!(y(d[yMetric]))) return h
+      else return h - y(d[yMetric])
+    })
     .attr('fill', function (d) {
       let rgbStr =
         'rgb(0,' +

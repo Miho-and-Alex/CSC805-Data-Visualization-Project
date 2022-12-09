@@ -31,12 +31,18 @@ h1 {
   ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
-/*
-.fade.in {
-  display: block;
+#nav-barchart {
+  width: 60%;
+  margin: 0 auto;
 }
 
-.fade {
-  transition:none;
+.dropdown-label-y {
+  position: relative;
+  right: 50px;
+  top: 290px;
 }
-*/
+
+.dropdown-label-x {
+  position: relative;
+  left: 290px;
+}

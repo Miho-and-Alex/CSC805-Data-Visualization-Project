@@ -1,3 +1,5 @@
+/*global d3*/
+
   let groupedByYear = await d3.csv('../data/grouped-by-year.csv', data => ({
     ...data,
     year: +data.year,
