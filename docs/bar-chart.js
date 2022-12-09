@@ -84,15 +84,11 @@ function barChart(data, div, yLabel, xLabel) {
 }
 
 async function addDropdownMenu(data, svg, HEIGHT, div) {
-  let selector = div + ' .x-axis.dropdown-men'
-  console.log(selector);
   let dropdownX = d3.select(div + ' .dropdown-menu.x-axis')
   let dropdownY = d3.select(div + ' .dropdown-menu.y-axis')
-  console.log(dropdownY);
   let xMetrics = ['year', 'bins']
   let yMetrics = data.groupedByYear.columns
   for (let yMetric of yMetrics) {
-    console.log(yMetric);
     let button = document.createElement('button')
     button.addEventListener('click', () => {
       let currX = d3.select('#dropdown-label-x').text()

@@ -1,3 +1,6 @@
+
+/*global d3*/
+
 // set the dimensions and margins of the graph
 let margin = {top: 40, right: 150, bottom: 40, left: 80},
     width = 800 - margin.left - margin.right,
