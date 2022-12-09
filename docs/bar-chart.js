@@ -2,7 +2,7 @@
 
 import { groupedByYear, groupedByPopularity } from './data.js'
 
-function barChart(data, div, yLabel, xLabel) {
+function barChart(data, div, xLabel, yLabel) {
   d3.select(div + ' #dropdown-label-y').text(yLabel)
   d3.select(div + ' #dropdown-label-x').text(xLabel)
 
@@ -26,7 +26,7 @@ function barChart(data, div, yLabel, xLabel) {
     .attr('y', HEIGHT + 60)
     .attr('font-size', '20px')
     .attr('text-anchor', 'middle')
-    .text('Year')
+    .text(xLabel)
 
   // Y label
   g.append('text')
@@ -40,7 +40,7 @@ function barChart(data, div, yLabel, xLabel) {
 
   const x = d3
     .scaleBand()
-    .domain(data.map(d => d.year))
+    .domain(data.map(d => d[xLabel]))
     .range([0, WIDTH])
     .paddingInner(0.3)
     .paddingOuter(0.2)
@@ -50,7 +50,7 @@ function barChart(data, div, yLabel, xLabel) {
     .domain([0, d3.max(data, d => (d[yLabel] ? d[yLabel] : 0))])
     .range([HEIGHT, 0])
 
-  const xAxisCall = d3.axisBottom(x)
+  const xAxisCall = d3.axisBottom(x).tickFormat(parseBins)
   g.append('g')
     .attr('class', 'x axis x-axis')
     .attr('transform', `translate(0, ${HEIGHT})`)
@@ -73,7 +73,11 @@ function barChart(data, div, yLabel, xLabel) {
     .enter()
     .append('rect')
     .attr('y', d => y(d[yLabel]))
-    .attr('x', d => x(d.year))
+    .attr('x', d => {
+      console.log('xLabel', xLabel)
+      console.log('xLabel', d[xLabel])
+      return x(d[xLabel])
+    })
     .attr('width', x.bandwidth)
     .attr('height', d => HEIGHT - y(d[yLabel]))
     .attr('fill', 'green')
@@ -122,11 +126,6 @@ function updateXY(data, svg, h, xMetric, yMetric) {
 
   data = xMetric === 'bins' ? data.groupedByPopularity : data.groupedByYear
 
-  d3.select('#dropdown-label-y').text(yMetric)
-  d3.select('#dropdown-label-x').text(xMetric == 'year' ? xMetric : 'Popularity')
-  svg.selectAll('.y-axis-label').text(yMetric)
-  svg.selectAll('#x-axis-label').text(xMetric == 'year' ? xMetric : 'Popularity')
-
   svg.selectAll('.y-axis').remove()
   svg.selectAll('.x-axis').remove()
 
@@ -146,16 +145,13 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     .axisLeft(y)
     .ticks(5)
     .tickFormat(d => d)
+
+  // adding y-axis
   svg.append('g').attr('class', 'y axis y-axis').call(yAxisCall)
 
-  const xAxisCall = d3.axisBottom(x).tickFormat(d => {
-    if (typeof d != 'string') return d
-    let split = d.split(',')
-    split[0] = split[0].replace('(', '')
-    split[1] = split[1].replace(']', '')
-    return `(${parseInt(split[0])}, ${parseInt(split[1])}]`
-  })
+  const xAxisCall = d3.axisBottom(x).tickFormat(parseBins)
 
+  // adding x axis
   svg
     .append('g')
     .attr('class', 'x axis x-axis')
@@ -192,11 +188,17 @@ function updateXY(data, svg, h, xMetric, yMetric) {
     })
 }
 
+function parseBins(d) {
+  if (typeof d != 'string') return d
+  let split = d.split(',')
+  split[0] = split[0].replace('(', '')
+  split[1] = split[1].replace(']', '')
+  return `(${parseInt(split[0])}, ${parseInt(split[1])}]`
+}
+
 let main = async () => {
-  barChart(groupedByYear, '#bar-chart-area-1', 'popularity', 'year')
-  //barChart(groupedByPopularity, '#bar-chart-area-2', 'year', 'popularity')
-  //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'y')
-  //addDropdownMenu({groupedByYear, groupedByPopularity}, barChartSVG, HEIGHT2, 'x')
+  barChart(groupedByYear, '#bar-chart-area-1', 'year', 'popularity')
+  barChart(groupedByPopularity, '#bar-chart-area-2', 'bins', 'year')
 }
 
 main()
