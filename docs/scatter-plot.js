@@ -16,7 +16,7 @@ let svg = d3.select("#scatter-plot")
 
 async function main() {
     let data = await d3.csv("./data/Spotify Dataset.csv");
-    let allColumns = ['year', 'genre', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'explicit'];
+    let allColumns = ['year', 'genre', 'duration_ms', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'explicit'];
     let selectedColumn = allColumns[0];
 
     d3.select("#scatter-plot-x-axis")
