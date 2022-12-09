@@ -82,7 +82,7 @@ export function starPlot(samples, data, title) {
     .x(d => d.x)
     .y(d => d.y)
   //let colors = ['darkorange', 'gray', 'navy']
-  let colors = ['pink', 'lightpink', 'orange']
+  let colors = ['gray', 'pink', 'orange']
 
   g.selectAll('path')
     .data(samples)

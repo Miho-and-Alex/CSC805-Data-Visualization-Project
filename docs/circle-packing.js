@@ -57,7 +57,7 @@ async function main() {
 
         let averages = await d3.json('./data/means.json')
         console.log(averages);
-        tooltip.append(() => starPlot([d, averages], data))
+        tooltip.append(() => starPlot([averages, d], data))
         tooltipOn = true
 
         //starPlot([d], event.x, event.y)
