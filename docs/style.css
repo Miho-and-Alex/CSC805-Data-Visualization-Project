@@ -1,4 +1,4 @@
-body {
+.main-content {
   margin: 20px;
 }
 
@@ -78,5 +78,10 @@ h5 > a {
 }
 
 .dropdown-y > button {
+  background-color: black;
+}
+
+footer {
+  color: white;
   background-color: black;
 }
