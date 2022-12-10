@@ -11,14 +11,24 @@ h1 {
   position: relative;
 }
 
+h5 > a {
+  color: black;
+  font-weight: normal;
+  text-decoration: none;
+}
+
 #home-chart-icons {
-  margin-top: -50px;
+  margin-top: 50px;
   z-index: -999;
+}
+
+img {
+  max-width: 20px;
 }
 
 .hover-icons {
   margin: 100px;
-  width: 100px;
+  width: 10px;
 }
 
 .zoom {
@@ -27,8 +37,21 @@ h1 {
 
 .zoom:hover {
   transform: scale(
-    1.5
+    1.1
   ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.nav-link {
+  color: black;
+}
+
+.nav-tabs > .nav-link.active { 
+  color: white;
+  background-color: black; 
+}
+
+.nav-link:hover {
+  color: black;
 }
 
 #nav-barchart {
@@ -45,4 +68,12 @@ h1 {
 .dropdown-label-x {
   position: relative;
   left: 290px;
+}
+
+.dropdown-x > button {
+  background-color: black;
+}
+
+.dropdown-y > button {
+  background-color: black;
 }

@@ -80,7 +80,7 @@ async function main() {
 
         d3.select(this)
             .attr("r", 6.0)
-            .style("opacity", 1)
+            .style("stroke-opacity", 1)
             .style("stroke", "black")
     }
     
@@ -99,8 +99,7 @@ async function main() {
 
         d3.select(this)
             .attr("r", 5.5)
-            .style("opacity", 0.4)
-            .style("stroke", "white")
+            .style("stroke-opacity", 0)
     }
         
     // Add dots
@@ -113,7 +112,6 @@ async function main() {
         .attr("cy", function (d) { return y(d.popularity); } )
         .attr("r", 5.5)
         .style("fill", "#1DB954")
-        .style("opacity", 0.4)
         .on("mouseenter", mouseover )
         .on("mousemove", mousemove )
         .on("mouseleave", mouseleave );

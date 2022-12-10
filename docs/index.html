@@ -12,7 +12,7 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="mx-3 my-2">
+    <div>
       <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
           <button
@@ -87,11 +87,19 @@
           tabindex="0"
         >
           <h1>Welcome to our data visualization project!</h1>
-          <div id="home-chart-icons" class="container">
+          <div>
+            <h3>About Dataset</h3>
+            <h5><a href="https://www.kaggle.com/datasets/paradisejoy/top-hits-spotify-from-20002019">Top Hits Spotify from 2000-2019</a></h5>
+            <p>
+              The dataset contains audio statistics of top 2000 songs on Spotify from 2000 to 2019. 
+              There are 18 columns of track data and musical characteristics of the track: artist, name of the track, duration, year, popularity, explicit, danceability, energy, key, loudness, mode (major or minor), speechiness, acousticness, instrumentalness, liveness, valence (musical positiveness), tempo, and genre.
+            </p>
+          </div>
+          <div id="home-chart-icons">
             <div class="row">
               <img
                 id="bar-chart-icon"
-                src="./bar-chart.png"
+                src="./bar-chart-icon.png"
                 class="hover-icons zoom col"
                 alt="bar-chart"
                 tabindex="0"
@@ -106,13 +114,13 @@
             <div class="row">
               <img
                 id="circle-packing-icon"
-                src="./circle-packing-screenshot.png"
+                src="./circle-packing-icon.png"
                 class="hover-icons zoom col"
                 alt="circle-packing-screenshot"
               />
               <img
                 id="star-plot-icon"
-                src="./star-plot.png"
+                src="./star-plot-icon.png"
                 class="hover-icons zoom col"
                 alt="star plot image"
               />
@@ -191,7 +199,7 @@
           tabindex="0"
         >
           <div id="scatter-plot"></div>
-          <div class="dropdown" id="scatter-plot-x-axis-dropdown">
+          <div class="dropdown-x" id="scatter-plot-x-axis-dropdown">
             <button
               class="btn btn-secondary dropdown-toggle"
               id="scatter-plot-current-x-axis"

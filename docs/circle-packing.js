@@ -14,7 +14,7 @@ let pack = data => d3.pack()
     .sort((a, b) => b.value - a.value));
 
 let color = d3.scaleLinear()
-    .range(["#203BAB", "#B7EFBC"])
+    .range(["white"/* purple */, "#B7EFBC"/* light pink */])
 
 let tooltip = d3.select("#circle-packing")
     .append("div")
