@@ -119,6 +119,7 @@ function legend(g, samples, colors) {
     .attr('class', 'legendItem')
     .attr('width', legendItemSize)
     .attr('height', legendItemSize)
+    .attr('stroke', 'black')
     .style('fill', (d, i) => colors[i])
     .attr('transform', (d, i) => {
       let x = xOffset
