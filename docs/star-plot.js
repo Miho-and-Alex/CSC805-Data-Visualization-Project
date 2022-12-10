@@ -85,7 +85,7 @@ export function starPlot(samples, data, title) {
     .data(samples)
     .join('path')
     .attr('d', d => linePath(getPathCoordinates(data, d, columns, radius, cx, cy)))
-    .attr('stroke-width', 1)
+    .attr('stroke-width', 2)
     .attr('stroke', 'black')
     .attr('fill', (d, i) => colors[i % colors.length])
     .attr('stroke-opacity', 1)
@@ -103,6 +103,50 @@ export function starPlot(samples, data, title) {
   legend(g, samples, colors)
 
   return svg.node()
+}
+
+function getPathCoordinates(data, sample, columns, radius, cx, cy) {
+  let coordinates = []
+  for (var i = 0; i < columns.length; i++) {
+    let column = columns[i]
+    console.log(column);
+    if (typeof sample[column] == 'string') {
+      coordinates.push({ x: cx, y: cy })
+      continue
+    }
+
+    let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
+    let coord = angleToCoordinate2(data, radius, angle, sample[column], column, cx, cy)
+    //console.log(column, sample[column], coord)
+    coordinates.push(coord)
+  }
+    // push to complete the path
+    let angle = Math.PI / 2 + (2 * Math.PI * 0) / columns.length
+    let coord = angleToCoordinate2(data, radius, angle, sample[columns[0]], columns[0], cx, cy)
+    //console.log(column, sample[column], coord)
+    coordinates.push(coord)
+    console.log(coordinates);
+
+  return coordinates
+}
+
+function angleToCoordinate2(data, radius, angle, value, column, cx, cy) {
+  // need new scale for each column
+
+  let radialScale = d3
+    .scaleLinear()
+    .domain([d3.min(data, d => d[column]), d3.max(data, d => d[column])])
+    .range([0, radius])
+  let x = Math.cos(angle) * radialScale(value)
+  let y = Math.sin(angle) * radialScale(value)
+  return { x: cx + x, y: cy - y }
+}
+
+function angleToCoordinate(angle, value, ringScale, cx, cy) {
+  // need new scale for each column
+  let x = Math.cos(angle) * ringScale(value)
+  let y = Math.sin(angle) * ringScale(value)
+  return { x: cx + x, y: cy - y }
 }
 
 function legend(g, samples, colors) {
@@ -136,40 +180,6 @@ function legend(g, samples, colors) {
     .text(d => d.song + ' by ' + d.artist)
 }
 
-function getPathCoordinates(data, sample, columns, radius, cx, cy) {
-  let coordinates = []
-  for (var i = 0; i < columns.length; i++) {
-    let column = columns[i]
-    if (typeof sample[column] == 'string') {
-      coordinates.push({ x: cx, y: cy })
-      continue
-    }
-    let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
-    let coord = angleToCoordinate2(data, radius, angle, sample[column], column, cx, cy)
-    //console.log(column, sample[column], coord)
-    coordinates.push(coord)
-  }
-  return coordinates
-}
-
-function angleToCoordinate2(data, radius, angle, value, column, cx, cy) {
-  // need new scale for each column
-
-  let radialScale = d3
-    .scaleLinear()
-    .domain([d3.min(data, d => d[column]), d3.max(data, d => d[column])])
-    .range([0, radius])
-  let x = Math.cos(angle) * radialScale(value)
-  let y = Math.sin(angle) * radialScale(value)
-  return { x: cx + x, y: cy - y }
-}
-
-function angleToCoordinate(angle, value, ringScale, cx, cy) {
-  // need new scale for each column
-  let x = Math.cos(angle) * ringScale(value)
-  let y = Math.sin(angle) * ringScale(value)
-  return { x: cx + x, y: cy - y }
-}
 
 async function main() {
   let data = await d3.csv(
@@ -217,6 +227,10 @@ async function main() {
     tempo: +data.tempo,
   }))
 
+  for (let i = 0; i < top_3.length; i++) {
+    top_3[i].song = 'top ' + (i + 1) + ' ' + top_3[i].song
+  }
+     
   d3.select('#star-plot-1').append(() => starPlot([averaged_data], data, 'Total Average'))
   d3.select('#star-plot-1').append(() => starPlot(top_3, data, 'Top 3 Most Popular Songs'))
 }
