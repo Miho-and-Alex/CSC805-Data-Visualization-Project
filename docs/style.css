@@ -17,18 +17,21 @@ h5 > a {
   text-decoration: none;
 }
 
+.small-text {
+  font-size: 12px;
+}
+
 #home-chart-icons {
-  margin-top: 50px;
   z-index: -999;
 }
 
-img {
-  max-width: 20px;
+.hover-icons {
+  margin: 50px;
+  max-width: 200px;
 }
 
-.hover-icons {
-  margin: 100px;
-  width: 10px;
+.figure-caption{
+  color: black;
 }
 
 .zoom {

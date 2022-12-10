@@ -86,44 +86,61 @@
           aria-labelledby="nav-about-tab"
           tabindex="0"
         >
-          <h1>Welcome to our data visualization project!</h1>
+          <h1>Welcome to Our Data Visualization Project!</h1>
+          <!-- Dataset Description -->
           <div>
             <h3>About Dataset</h3>
-            <h5><a href="https://www.kaggle.com/datasets/paradisejoy/top-hits-spotify-from-20002019">Top Hits Spotify from 2000-2019</a></h5>
+            <h5><a href="https://www.kaggle.com/datasets/paradisejoy/top-hits-spotify-from-20002019">Top Hits Spotify from 2000-2019<span class="small-text">&nbsp; [Link]</span></a></h5>
             <p>
               The dataset contains audio statistics of top 2000 songs on Spotify from 2000 to 2019. 
               There are 18 columns of track data and musical characteristics of the track: artist, name of the track, duration, year, popularity, explicit, danceability, energy, key, loudness, mode (major or minor), speechiness, acousticness, instrumentalness, liveness, valence (musical positiveness), tempo, and genre.
             </p>
           </div>
-          <div id="home-chart-icons">
-            <div class="row">
-              <img
+          <!-- Links to Charts -->
+          <h3>Explore Data Visualization</h3>
+          <div id="home-chart-icons" class="container">
+            <div class="row justify-content-md-center">
+              <figure class="figure col text-center">
+                <img
                 id="bar-chart-icon"
                 src="./bar-chart-icon.png"
-                class="hover-icons zoom col"
+                class="hover-icons zoom"
                 alt="bar-chart"
                 tabindex="0"
-              />
-              <img
+                />
+                <figcaption class="figure-caption">Bar Chart</figcaption>
+              </figure>
+              <figure class="figure col text-center">
+                <img
                 id="scatter-plot-icon"
                 src="./scatter-plot-icon.png"
-                class="hover-icons zoom col"
+                class="hover-icons zoom"
                 alt="scatter-plot-icon"
-              />
+                />
+                <figcaption class="figure-caption">Scatter Plot</figcaption>
+              </figure>
             </div>
-            <div class="row">
-              <img
-                id="circle-packing-icon"
+            <div class="row justify-content-md-center">
+              <figure class="figure col text-center">
+                <img
+                id="bar-chart-icon"
                 src="./circle-packing-icon.png"
-                class="hover-icons zoom col"
-                alt="circle-packing-screenshot"
-              />
-              <img
-                id="star-plot-icon"
+                class="hover-icons zoom"
+                alt="bar-chart"
+                tabindex="0"
+                />
+                <figcaption class="c">Circle Packing</figcaption>
+              </figure>
+              <figure class="figure col text-center">
+                <img
+                id="bar-chart-icon"
                 src="./star-plot-icon.png"
-                class="hover-icons zoom col"
-                alt="star plot image"
-              />
+                class="hover-icons zoom"
+                alt="bar-chart"
+                tabindex="0"
+                />
+                <figcaption class="figure-caption">Star Plot</figcaption>
+              </figure>
             </div>
           </div>
         </div>
