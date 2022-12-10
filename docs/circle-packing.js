@@ -29,6 +29,7 @@ let tooltip = d3.select("#circle-packing")
 
 async function main() {
     let data = await d3.json("./data/Spotify Dataset.json");
+    let averages = await d3.json('./data/means.json')
     let group = d3.group(data, d => d.genre);
     let root = pack(group);
     let focus = root;
@@ -46,7 +47,7 @@ async function main() {
         .style("cursor", "pointer")
         .on("click", (event) => zoom(event, root));
 
-    let mouseclick = async function(event, d) {
+    let mouseclick = function(event, d) {
        tooltip
             .text(d.song + " by " + d.artist)
             .style("left", (event.x) + 10 + "px")
@@ -55,7 +56,6 @@ async function main() {
             .style("height", height * 0.5 + 20 + "px")
             .style("opacity", 1)
 
-        let averages = await d3.json('./data/means.json')
         averages.song = 'Average'
         averages.artist = 'averaging all data'
         console.log(averages);
