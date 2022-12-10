@@ -29,11 +29,8 @@ export function starPlot(samples, data, title) {
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
 
-  // Can append the radar chart below
-
   let rings = [1, 2, 3, 4, 5]
   let ringScale = d3.scaleLinear().domain([0, rings.length]).range([0, radius])
-  let ringColors = ['lightblue', 'lightgreen', 'pink', 'tan', 'gray']
 
   // adding rings
   g.selectAll('circle')
@@ -42,7 +39,7 @@ export function starPlot(samples, data, title) {
     .attr('cx', cx)
     .attr('cy', cy)
     .attr('fill', 'none')
-    .attr('stroke', '#EEEEEE')//(ring, i) => ringColors[i])
+    .attr('stroke', '#EEEEEE')
     .attr('r', ring => ringScale(ring))
 
   // add text labels
@@ -59,7 +56,7 @@ export function starPlot(samples, data, title) {
     let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
     let line_coordinate = angleToCoordinate(angle, rings.length, ringScale, cx, cy)
 
-    let label_coordinate = angleToCoordinate(angle, rings.length + .9, ringScale, cx, cy)
+    let label_coordinate = angleToCoordinate(angle, rings.length + 0.9, ringScale, cx, cy)
 
     //draw axis line
     g.append('line')
@@ -82,18 +79,16 @@ export function starPlot(samples, data, title) {
     .line()
     .x(d => d.x)
     .y(d => d.y)
-  //let colors = ['darkorange', 'gray', 'navy']
-  let colors = ['#B7EFBC'/* light green */, '#FB2D27'/* light pink */, '#203BAB'/* purple */]
 
+  let colors = ['#B7EFBC' /* light green */, '#FB2D27' /* light pink */, '#203BAB' /* purple */]
   g.selectAll('path')
     .data(samples)
     .join('path')
     .attr('d', d => linePath(getPathCoordinates(data, d, columns, radius, cx, cy)))
     .attr('stroke-width', 1)
     .attr('stroke', 'black')
-    .attr('fill', (d, i) => colors[i % 3])
+    .attr('fill', (d, i) => colors[i % colors.length])
     .attr('stroke-opacity', 1)
-    // .attr('opacity', 1)
 
   // title
   g.append('text')
@@ -105,7 +100,39 @@ export function starPlot(samples, data, title) {
     .style('font-weight', 'bold')
     .text(title)
 
+  legend(g, samples, colors)
+
   return svg.node()
+}
+
+function legend(g, samples, colors) {
+  //Initialize legend
+  var legendItemSize = 12
+  var legendSpacing = 4
+  var xOffset = 0
+  var yOffset = 350
+
+  var legend = g.append('svg').selectAll('.legendItem').data(samples)
+  legend
+    .enter()
+    .append('rect')
+    .attr('class', 'legendItem')
+    .attr('width', legendItemSize)
+    .attr('height', legendItemSize)
+    .style('fill', (d, i) => colors[i])
+    .attr('transform', (d, i) => {
+      let x = xOffset
+      let y = yOffset + (legendItemSize + legendSpacing) * i
+      return `translate(${x}, ${y})`
+    })
+
+  //Create legend labels
+  legend
+    .enter()
+    .append('text')
+    .attr('x', xOffset + legendItemSize + 5)
+    .attr('y', (d, i) => yOffset + (legendItemSize + legendSpacing) * i + 12)
+    .text(d => d.song + ' by ' + d.artist)
 }
 
 function getPathCoordinates(data, sample, columns, radius, cx, cy) {
@@ -167,6 +194,9 @@ async function main() {
   )
 
   let averaged_data = await d3.json('./data/means.json')
+  averaged_data.song = 'Average'
+  averaged_data.artist = 'averaging all data'
+
   let top_3 = await d3.csv('./data/top_3.csv', data => ({
     ...data,
     year: +data.year,

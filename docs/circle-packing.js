@@ -52,10 +52,12 @@ async function main() {
             .style("left", (event.x) + 10 + "px")
             .style("top", (event.y) + 5 + "px")
             .style("width", width * 0.5 + "px")
-            .style("height", height * 0.5 + "px")
+            .style("height", height * 0.5 + 20 + "px")
             .style("opacity", 1)
 
         let averages = await d3.json('./data/means.json')
+        averages.song = 'Average'
+        averages.artist = 'averaging all data'
         console.log(averages);
         tooltip.append(() => starPlot([averages, d], data))
         tooltipOn = true
