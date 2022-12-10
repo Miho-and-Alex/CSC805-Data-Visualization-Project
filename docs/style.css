@@ -84,4 +84,6 @@ h5 > a {
 footer {
   color: white;
   background-color: black;
+  margin: 60px -100px -100px -100px;
+  padding: 5px;
 }
