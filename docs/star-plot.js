@@ -80,14 +80,35 @@ export function starPlot(samples, data, title) {
     .x(d => d.x)
     .y(d => d.y)
 
-  let colors = ['#B7EFBC' /* light green */, '#FB2D27' /* light pink */, '#203BAB' /* purple */]
+  let colors = ['#B7EFBC' /* light green */, 'lightpink' /* light pink */, 'lightblue' /* purple */]
+
+  if (samples.length == 3) {
+    console.log(samples)
+    let temp = samples[2]
+    samples[2] = samples[1]
+    samples[1] = temp
+    console.log(samples)
+  }
+
   g.selectAll('path')
     .data(samples)
     .join('path')
     .attr('d', d => linePath(getPathCoordinates(data, d, columns, radius, cx, cy)))
-    .attr('stroke-width', 2)
-    .attr('stroke', 'black')
+    .attr('stroke-width', 1)
+    //.attr('stroke', 'black')
     .attr('fill', (d, i) => colors[i % colors.length])
+    .attr('stroke-opacity', 1)
+
+  // outline of path
+  let g2 = g.append('g') // next layer
+  samples.reverse()
+  g2.selectAll('path')
+    .data(samples)
+    .join('path')
+    .attr('d', d => linePath(getPathCoordinates(data, d, columns, radius, cx, cy)))
+    .attr('stroke-width', 1)
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
     .attr('stroke-opacity', 1)
 
   // title
@@ -109,7 +130,6 @@ function getPathCoordinates(data, sample, columns, radius, cx, cy) {
   let coordinates = []
   for (var i = 0; i < columns.length; i++) {
     let column = columns[i]
-    console.log(column);
     if (typeof sample[column] == 'string') {
       coordinates.push({ x: cx, y: cy })
       continue
@@ -117,15 +137,12 @@ function getPathCoordinates(data, sample, columns, radius, cx, cy) {
 
     let angle = Math.PI / 2 + (2 * Math.PI * i) / columns.length
     let coord = angleToCoordinate2(data, radius, angle, sample[column], column, cx, cy)
-    //console.log(column, sample[column], coord)
     coordinates.push(coord)
   }
-    // push to complete the path
-    let angle = Math.PI / 2 + (2 * Math.PI * 0) / columns.length
-    let coord = angleToCoordinate2(data, radius, angle, sample[columns[0]], columns[0], cx, cy)
-    //console.log(column, sample[column], coord)
-    coordinates.push(coord)
-    console.log(coordinates);
+  // push to complete the path
+  let angle = Math.PI / 2 + (2 * Math.PI * 0) / columns.length
+  let coord = angleToCoordinate2(data, radius, angle, sample[columns[0]], columns[0], cx, cy)
+  coordinates.push(coord)
 
   return coordinates
 }
@@ -180,7 +197,6 @@ function legend(g, samples, colors) {
     .text(d => d.song + ' by ' + d.artist)
 }
 
-
 async function main() {
   let data = await d3.csv(
     'https://raw.githubusercontent.com/Miho-and-Alex/CSC805-Data-Visualization-Project/main/docs/data/removed-strings.csv',
@@ -228,9 +244,9 @@ async function main() {
   }))
 
   for (let i = 0; i < top_3.length; i++) {
-    top_3[i].song = 'top ' + (i + 1) + ' ' + top_3[i].song
+    top_3[i].song = 'Top ' + (i + 1) + ' ' + top_3[i].song
   }
-     
+
   d3.select('#star-plot-1').append(() => starPlot([averaged_data], data, 'Total Average'))
   d3.select('#star-plot-1').append(() => starPlot(top_3, data, 'Top 3 Most Popular Songs'))
 }
